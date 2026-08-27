@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .container { width: 100%; max-width: 500px; padding: 20px; }
+        .card { background: white; border-radius: 16px; padding: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
+        .icon { font-size: 5rem; margin-bottom: 20px; }
+        h1 { color: #16a34a; margin-bottom: 15px; }
+        p { color: #64748b; line-height: 1.6; margin-bottom: 10px; }
+        .details { background: #f1f5f9; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: left; }
+        .details p { color: #1e293b; margin-bottom: 8px; }
+        .details strong { color: #475569; }
+        .btn { display: inline-block; padding: 14px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 20px; }
+        .btn:hover { background: #5a67d8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="icon">✅</div>
+            <h1>Booking Confirmed!</h1>
+            <p>Your appointment has been successfully booked.</p>
+
+            <div class="details">
+                <p><strong>Business:</strong> {{ business.name }}</p>
+                <p><strong>Status:</strong> Confirmed</p>
+            </div>
+
+            <p>You will receive a confirmation email shortly.</p>
+            <a href="/book/{{ business.slug }}" class="btn">Book Another</a>
+        </div>
+    </div>
+</body>
+</html>
