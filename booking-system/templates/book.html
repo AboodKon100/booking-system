@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book - {{ business.name }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .container { max-width: 600px; margin: -30px auto 40px; padding: 0 20px; }
+        .card { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h2 { margin-bottom: 25px; color: #1e293b; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #475569; }
+        input, select { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: #667eea; }
+        .service-option { display: block; padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+        .service-option:hover { border-color: #667eea; background: #f8fafc; }
+        .service-option input { width: auto; margin-right: 10px; }
+        .service-option strong { display: block; margin-bottom: 5px; }
+        .service-option span { color: #64748b; font-size: 0.9rem; }
+        .slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .slot { padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .slot:hover { border-color: #667eea; background: #f8fafc; }
+        .slot.selected { background: #667eea; color: white; border-color: #667eea; }
+        button { width: 100%; padding: 16px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 20px; }
+        button:hover { background: #5a67d8; }
+        .no-slots { color: #64748b; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ business.name }}</h1>
+        <p>Book your appointment online</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <form method="POST" action="/book/{{ business.slug }}/confirm">
+                <h2>1. Select Service</h2>
+                {% for service in services %}
+                <label class="service-option">
+                    <input type="radio" name="service_id" value="{{ service.id }}" required
+                           onchange="document.getElementById('service-info').innerText = '{{ service.duration }}min - ${{ service.price }}'">
+                    <strong>{{ service.name }}</strong>
+                    <span>{{ service.duration }} minutes - ${{ service.price }}</span>
+                </label>
+                {% endfor %}
+
+                <h2 style="margin-top: 30px;">2. Select Date</h2>
+                <div class="form-group">
+                    <input type="date" id="date" name="date" required onchange="loadSlots()">
+                </div>
+
+                <h2>3. Select Time</h2>
+                <div id="slots-container">
+                    <p class="no-slots">Select a date and service first</p>
+                </div>
+
+                <h2 style="margin-top: 30px;">4. Your Details</h2>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Phone (optional)</label>
+                    <input type="tel" name="phone" placeholder="+966 5X XXX XXXX">
+                </div>
+
+                <button type="submit">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedTime = null;
+
+        async function loadSlots() {
+            const date = document.getElementById('date').value;
+            const service = document.querySelector('input[name="service_id"]:checked');
+            if (!date || !service) return;
+
+            const container = document.getElementById('slots-container');
+            container.innerHTML = '<p class="no-slots">Loading available times...</p>';
+
+            const res = await fetch(`/api/slots/{{ business.slug }}/${date}?service_id=${service.value}`);
+            const slots = await res.json();
+
+            if (slots.length === 0) {
+                container.innerHTML = '<p class="no-slots">No available slots for this date</p>';
+                return;
+            }
+
+            container.innerHTML = '<div class="slots">' + slots.map(slot =>
+                `<div class="slot" onclick="selectTime('${slot}', this)">${slot}</div>`
+            ).join('') + '</div><input type="hidden" name="time" id="selected-time">';
+        }
+
+        function selectTime(time, el) {
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('selected-time').value = time;
+        }
+    </script>
+</body>
+</html>
