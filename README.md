@@ -1,67 +1,50 @@
-# BookNow - Online Booking System
+# Noomly — Never Miss Another Appointment
 
-A modern, simple online booking system for small businesses. Let your customers book appointments 24/7.
+A premium SaaS booking platform for service businesses. 24/7 online booking, AI verification, secure payments, and automatic invoicing.
 
 ## Features
 
-- **Online Booking** - Customers book anytime, from anywhere
-- **Automatic Reminders** - Reduce no-shows with SMS/email reminders
-- **Business Dashboard** - Manage appointments, services, and customers
-- **Mobile Friendly** - Works perfectly on all devices
-- **Custom Booking Links** - Share your unique booking URL
-- **Payment Collection** - Accept deposits or full payment
+- **24/7 Online Booking** — Customers book anytime, from any device
+- **AI Verification Agent** — Reduces no-shows by 80% via automated confirmation calls
+- **Secure Payments** — Stripe-powered deposits and full payments with automatic invoicing
+- **Business Dashboard** — Revenue analytics, calendar view, customer management
+- **Public Booking Pages** — Shareable links for each business
+- **Working Hours** — Configurable per-day availability
+- **Responsive Design** — Premium Meta-level UI/UX
 
 ## Tech Stack
 
-- **Backend:** Python, Flask
-- **Database:** SQLite
-- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Python 3.12, Flask
+- **Database:** SQLAlchemy (SQLite dev / PostgreSQL production)
+- **Frontend:** Tailwind CSS, Chart.js, FullCalendar
+- **Payments:** Stripe
+- **Hosting:** Render.com
 
 ## Quick Start
 
 ```bash
-# Clone the repository
 git clone https://github.com/AboodKon100/booking-system.git
-
-# Install dependencies
+cd booking-system
 pip install -r requirements.txt
-
-# Run the app
 python app.py
 ```
 
 Open http://localhost:5000
 
-## How It Works
-
-1. **Register** your business
-2. **Add** your services (name, duration, price)
-3. **Share** your booking link with customers
-4. **Customers** book appointments online
-5. **Manage** everything from your dashboard
-
 ## Deployment
 
-Free deployment on [Render.com](https://render.com):
+Render.com:
 - Build Command: `pip install -r requirements.txt`
-- Start Command: `python app.py`
+- Start Command: `gunicorn app:app`
 
-## Business Model
+## Pricing
 
 | Plan | Price | Features |
 |------|-------|----------|
 | Starter | Free | 1 service, 10 bookings/month |
-| Professional | $29/mo | Unlimited everything |
-| Business | $79/mo | Multiple staff, analytics |
+| Professional | $29/mo | Unlimited everything, AI verification, custom branding |
+| Business | $79/mo | Multiple staff, API access, dedicated manager |
 
 ## License
 
-MIT License
-
-## Contact
-
-Built by AboodKon100 - abdallah.biz100@gmail.com
-
----
-
-**Start your free trial today!**
+MIT License — Built by AboodKon100 (abdallah.biz100@gmail.com)

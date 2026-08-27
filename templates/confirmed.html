@@ -1,39 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmed</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .container { width: 100%; max-width: 500px; padding: 20px; }
-        .card { background: white; border-radius: 16px; padding: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
-        .icon { font-size: 5rem; margin-bottom: 20px; }
-        h1 { color: #16a34a; margin-bottom: 15px; }
-        p { color: #64748b; line-height: 1.6; margin-bottom: 10px; }
-        .details { background: #f1f5f9; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: left; }
-        .details p { color: #1e293b; margin-bottom: 8px; }
-        .details strong { color: #475569; }
-        .btn { display: inline-block; padding: 14px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 20px; }
-        .btn:hover { background: #5a67d8; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Confirmed — Noomly</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif']},colors:{n:{50:'#f0f4ff',100:'#dbe4ff',200:'#bac8ff',300:'#91a7ff',400:'#748ffc',500:'#5c7cfa',600:'#4c6ef5',700:'#4263eb',800:'#3b5bdb',900:'#364fc7'}}}}}</script>
+<style>
+*{font-family:'Plus Jakarta Sans',sans-serif}
+body{background:#06080f;min-height:100vh}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.fu{animation:fadeUp .6s ease-out both}
+@keyframes checkScale{0%{transform:scale(0) rotate(-45deg)}100%{transform:scale(1) rotate(0)}}.chk{animation:checkScale .5s ease-out .3s both}
+</style>
 </head>
-<body>
-    <div class="container">
-        <div class="card">
-            <div class="icon">✅</div>
-            <h1>Booking Confirmed!</h1>
-            <p>Your appointment has been successfully booked.</p>
+<body class="text-white flex items-center justify-center p-4">
+<div class="w-full max-w-md text-center fu">
+<div class="w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mx-auto mb-8 shadow-xl shadow-green-500/30 chk">
+<svg class="w-12 h-12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+</div>
+<h1 class="text-3xl font-extrabold mb-3">Booking Confirmed!</h1>
+<p class="text-slate-400 mb-8">Your appointment has been successfully booked.</p>
 
-            <div class="details">
-                <p><strong>Business:</strong> {{ business.name }}</p>
-                <p><strong>Status:</strong> Confirmed</p>
-            </div>
+<div class="bg-[#0c101d]/60 border border-white/5 rounded-2xl p-6 mb-8 text-left space-y-4">
+<div class="flex items-center justify-between pb-3 border-b border-white/5">
+<span class="text-sm text-slate-400">Business</span>
+<span class="text-sm font-semibold">{{ business.name }}</span>
+</div>
+<div class="flex items-center justify-between pb-3 border-b border-white/5">
+<span class="text-sm text-slate-400">Service</span>
+<span class="text-sm font-semibold">{{ appointment.service.name }}</span>
+</div>
+<div class="flex items-center justify-between pb-3 border-b border-white/5">
+<span class="text-sm text-slate-400">Date</span>
+<span class="text-sm font-semibold">{{ appointment.date.strftime('%B %d, %Y') }}</span>
+</div>
+<div class="flex items-center justify-between pb-3 border-b border-white/5">
+<span class="text-sm text-slate-400">Time</span>
+<span class="text-sm font-semibold">{{ appointment.time }}</span>
+</div>
+<div class="flex items-center justify-between pb-3 border-b border-white/5">
+<span class="text-sm text-slate-400">Customer</span>
+<span class="text-sm font-semibold">{{ appointment.cust_name }}</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm text-slate-400">Confirmation Code</span>
+<span class="text-lg font-extrabold text-n-400 font-mono">{{ appointment.confirmation_code }}</span>
+</div>
+{% if appointment.payment_amount > 0 %}
+<div class="flex items-center justify-between pt-3 border-t border-white/5">
+<span class="text-sm text-slate-400">Amount Due</span>
+<span class="text-lg font-extrabold text-green-400">${{ '%.2f'|format(appointment.payment_amount) }}</span>
+</div>
+{% endif %}
+</div>
 
-            <p>You will receive a confirmation email shortly.</p>
-            <a href="/book/{{ business.slug }}" class="btn">Book Another</a>
-        </div>
-    </div>
+<div class="bg-n-500/10 border border-n-500/20 rounded-xl p-4 mb-6">
+<p class="text-sm text-n-300">A confirmation email has been sent to <strong>{{ appointment.cust_email }}</strong></p>
+</div>
+
+<a href="/book/{{ business.slug }}" class="inline-block px-8 py-3 rounded-xl border border-white/10 text-sm font-semibold hover:bg-white/5 transition">Book Another Appointment</a>
+</div>
 </body>
 </html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noomly — Never Miss Another Appointment</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif']},colors:{n:{50:'#f0f4ff',100:'#dbe4ff',200:'#bac8ff',300:'#91a7ff',400:'#748ffc',500:'#5c7cfa',600:'#4c6ef5',700:'#4263eb',800:'#3b5bdb',900:'#364fc7'}}}}}</script>
+<style>
+*{font-family:'Plus Jakarta Sans',sans-serif;scroll-behavior:smooth}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.fu{animation:fadeUp .7s ease-out both}.fu1{animation-delay:.1s}.fu2{animation-delay:.2s}.fu3{animation-delay:.3s}.fu4{animation-delay:.4s}
+.fl{animation:float 5s ease-in-out infinite}
+.glass{background:rgba(255,255,255,.04);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.06)}
+.glow{box-shadow:0 0 60px rgba(92,124,250,.15)}
+.tc{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.tc:hover{transform:translateY(-6px)}
+.nav-blur{background:rgba(2,6,23,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04)}
+.btn-g{position:relative;overflow:hidden}
+.btn-g::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transition:left .5s}
+.btn-g:hover::after{left:100%}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+.pcard{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.pcard:hover{transform:translateY(-8px) scale(1.01)}
+.pcard.pop{background:linear-gradient(135deg,rgba(92,124,250,.12),rgba(136,92,250,.12));border-color:rgba(92,124,250,.4)}
+.fe{transition:all .3s ease;position:relative;overflow:hidden}
+.fe::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(92,124,250,.05),transparent);opacity:0;transition:opacity .3s}
+.fe:hover::after{opacity:1}
+.fe:hover{transform:translateY(-4px);border-color:rgba(92,124,250,.3)}
+.rev{transition:all .3s ease}.rev:hover{transform:scale(1.02)}
+.stat-n{animation:countUp .5s ease-out both}
+</style>
+</head>
+<body class="bg-[#06080f] text-white antialiased overflow-x-hidden">
+
+<nav class="fixed w-full z-50 nav-blur">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<a href="/" class="flex items-center gap-2.5 group">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-n-500 to-purple-500 flex items-center justify-center shadow-lg shadow-n-500/30 group-hover:shadow-n-500/50 transition-shadow">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+</div>
+<span class="text-lg font-extrabold tracking-tight">Noomly</span>
+</a>
+<div class="hidden md:flex items-center gap-8">
+<a href="#features" class="text-sm text-slate-400 hover:text-white transition-colors">Features</a>
+<a href="#pricing" class="text-sm text-slate-400 hover:text-white transition-colors">Pricing</a>
+<a href="#testimonials" class="text-sm text-slate-400 hover:text-white transition-colors">Testimonials</a>
+</div>
+<div class="flex items-center gap-3">
+<a href="/login" class="text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/5 transition-colors">Sign In</a>
+<a href="/register" class="text-sm font-bold px-5 py-2.5 rounded-xl bg-gradient-to-r from-n-500 to-purple-500 hover:opacity-90 transition btn-g shadow-lg shadow-n-500/25">Get Started Free</a>
+</div>
+</div>
+</nav>
+
+<section class="min-h-screen relative flex items-center pt-16 overflow-hidden">
+<div class="hero-orb w-[700px] h-[700px] bg-n-500/20 -top-40 -right-40 absolute"></div>
+<div class="hero-orb w-[500px] h-[500px] bg-purple-500/15 -bottom-40 -left-40 absolute"></div>
+<div class="hero-orb w-[300px] h-[300px] bg-pink-500/10 top-1/3 left-1/3 absolute"></div>
+
+<div class="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center relative z-10 w-full">
+<div>
+<div class="fu inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 text-sm border border-white/5">
+<span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span></span>
+<span class="text-slate-300">Now in Beta — 500+ businesses</span>
+</div>
+<h1 class="fu fu1 text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6">
+Your Business,<br>
+<span class="bg-gradient-to-r from-n-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Always Open.</span>
+</h1>
+<p class="fu fu2 text-lg text-slate-400 max-w-lg leading-relaxed mb-8">
+Let customers book 24/7. AI verification, automatic invoicing, secure payments. The smart booking platform that grows with you.
+</p>
+<div class="fu fu3 flex flex-col sm:flex-row gap-4 mb-10">
+<a href="/register" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-n-500 to-purple-500 font-bold text-base hover:opacity-90 transition btn-g text-center shadow-xl shadow-n-500/30">Start Free Trial</a>
+<a href="#features" class="px-8 py-4 rounded-2xl border border-white/10 font-semibold text-base hover:bg-white/5 transition text-center">See Features →</a>
+</div>
+<div class="fu fu4 flex items-center gap-6">
+<div class="flex -space-x-3">
+{% for c in ['from-blue-400 to-blue-600','from-purple-400 to-purple-600','from-pink-400 to-pink-600','from-emerald-400 to-emerald-600','from-amber-400 to-amber-600'] %}
+<div class="w-10 h-10 rounded-full bg-gradient-to-br {{ c }} border-2 border-[#06080f]"></div>
+{% endfor %}
+</div>
+<div>
+<div class="flex gap-0.5 text-amber-400 text-sm">{% for i in range(5) %}<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>{% endfor %}</div>
+<p class="text-sm text-slate-500 mt-1">Loved by 2,000+ businesses</p>
+</div>
+</div>
+</div>
+
+<div class="fu fu2 relative">
+<div class="absolute inset-0 bg-gradient-to-r from-n-500/10 to-purple-500/10 rounded-3xl blur-3xl"></div>
+<div class="relative bg-[#0c101d]/90 glass rounded-3xl border border-white/5 p-6 shadow-2xl glow">
+<div class="flex items-center gap-2 mb-5 pb-4 border-b border-white/5">
+<div class="w-3 h-3 rounded-full bg-red-400/80"></div>
+<div class="w-3 h-3 rounded-full bg-amber-400/80"></div>
+<div class="w-3 h-3 rounded-full bg-green-400/80"></div>
+<span class="text-xs text-slate-600 ml-2 font-medium">Dashboard</span>
+</div>
+<div class="grid grid-cols-3 gap-3 mb-5">
+<div class="bg-white/[.03] rounded-2xl p-4 border border-white/[.03]"><p class="text-[11px] text-slate-500 mb-1 uppercase tracking-wider">Today</p><p class="text-2xl font-extrabold stat-n">24</p><p class="text-[11px] text-green-400 font-medium">↑ 12%</p></div>
+<div class="bg-white/[.03] rounded-2xl p-4 border border-white/[.03]"><p class="text-[11px] text-slate-500 mb-1 uppercase tracking-wider">Revenue</p><p class="text-2xl font-extrabold text-green-400 stat-n">$2,450</p><p class="text-[11px] text-green-400 font-medium">↑ 8%</p></div>
+<div class="bg-white/[.03] rounded-2xl p-4 border border-white/[.03]"><p class="text-[11px] text-slate-500 mb-1 uppercase tracking-wider">Customers</p><p class="text-2xl font-extrabold stat-n">186</p><p class="text-[11px] text-green-400 font-medium">↑ 15%</p></div>
+</div>
+<div class="space-y-2">
+{% for name, svc, status, bg in [('Sarah Johnson','Hair Styling','Confirmed','bg-green-500/15 text-green-400'),('Mike Chen','Dental Checkup','Pending','bg-amber-500/15 text-amber-400'),('Emma Wilson','Massage','AI Verified','bg-blue-500/15 text-blue-400'),('Alex Kim','Manicure','Completed','bg-purple-500/15 text-purple-400')] %}
+<div class="flex items-center justify-between p-3.5 bg-white/[.03] rounded-xl hover:bg-white/[.06] transition-all border border-white/[.03]">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-gradient-to-br from-n-400 to-purple-500 flex items-center justify-center text-sm font-bold">{{ name[0] }}{{ name.split()[1][0] }}</div>
+<div><p class="text-sm font-semibold">{{ name }}</p><p class="text-xs text-slate-500">{{ svc }}</p></div>
+</div>
+<span class="text-[11px] px-3 py-1.5 rounded-full {{ bg }} font-semibold uppercase tracking-wider">{{ status }}</span>
+</div>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="py-8 border-y border-white/5 overflow-hidden bg-white/[.01]">
+<div class="flex gap-16 whitespace-nowrap" style="animation:marquee 25s linear infinite">
+{% for n in ['Zaisha Salon','Chaps & Co','BRAU KSA','Nova Salon','Curl Boutique','Kesay Clinic','Doctor Style','Mayam Aesthetics','Tones Beauty','Dalm Salon'] * 3 %}
+<div class="flex items-center gap-3 text-slate-600">
+<div class="w-8 h-8 rounded-lg bg-white/[.03] border border-white/[.05] flex items-center justify-center text-xs font-bold">{{ n[0] }}</div>
+<span class="text-sm font-medium">{{ n }}</span>
+</div>
+{% endfor %}
+</div>
+</section>
+<style>@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}</style>
+
+<section id="features" class="py-28 relative">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-16">
+<span class="inline-block px-4 py-1.5 rounded-full bg-n-500/10 text-n-400 text-xs font-bold uppercase tracking-wider mb-4">Features</span>
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Everything you need to <span class="bg-gradient-to-r from-n-400 to-purple-400 bg-clip-text text-transparent">scale</span></h2>
+<p class="text-lg text-slate-400 max-w-2xl mx-auto">Powerful tools designed for modern businesses. From booking to payments, Noomly handles it all.</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+{% for icon, title, desc, grad in [
+('M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z','24/7 Online Booking','Customers book anytime, from anywhere. No more phone calls or missed opportunities.','from-n-500 to-blue-500'),
+('M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z','AI Verification Agent','Our AI calls customers to verify appointments. Reduce no-shows by 80%.','from-purple-500 to-pink-500'),
+('M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z','Secure Payments','Accept deposits and full payments online. Stripe-powered with automatic invoicing.','from-emerald-500 to-green-500'),
+('M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z','Email Invoicing','Professional invoices generated and sent automatically to every customer.','from-amber-500 to-orange-500'),
+('M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z','Analytics Dashboard','Track revenue, appointments, and customer insights with beautiful charts.','from-pink-500 to-rose-500'),
+('M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z','Mobile First','Fully responsive. Customers book from any device — phone, tablet, or desktop.','from-cyan-500 to-blue-500')
+] %}
+<div class="fe bg-[#0c101d]/60 border border-white/5 rounded-2xl p-7">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br {{ grad }} flex items-center justify-center mb-5 shadow-lg">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ icon }}"/></svg>
+</div>
+<h3 class="text-lg font-bold mb-2">{{ title }}</h3>
+<p class="text-slate-400 text-sm leading-relaxed">{{ desc }}</p>
+</div>
+{% endfor %}
+</div>
+</div>
+</section>
+
+<section id="pricing" class="py-28 bg-white/[.01] border-y border-white/5">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-16">
+<span class="inline-block px-4 py-1.5 rounded-full bg-n-500/10 text-n-400 text-xs font-bold uppercase tracking-wider mb-4">Pricing</span>
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Simple, transparent pricing</h2>
+<p class="text-lg text-slate-400">Start free, upgrade when you're ready. No hidden fees ever.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+<div class="pcard bg-[#0c101d]/60 border border-white/5 rounded-3xl p-8">
+<p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Starter</p>
+<div class="mb-6"><span class="text-5xl font-extrabold">$0</span><span class="text-slate-500 text-sm">/forever</span></div>
+<ul class="space-y-3.5 mb-8">
+{% for f in ['1 service','10 bookings/month','Basic dashboard','Email support'] %}
+<li class="flex items-center gap-3 text-sm text-slate-300"><svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>{{ f }}</li>
+{% endfor %}
+</ul>
+<a href="/register" class="block w-full py-3.5 rounded-xl border border-white/10 text-center font-semibold hover:bg-white/5 transition">Get Started</a>
+</div>
+<div class="pcard pop rounded-3xl p-8 relative">
+<span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-n-500 to-purple-500 text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-n-500/25">Most Popular</span>
+<p class="text-xs font-bold text-n-400 uppercase tracking-widest mb-3">Professional</p>
+<div class="mb-6"><span class="text-5xl font-extrabold">$29</span><span class="text-slate-500 text-sm">/month</span></div>
+<ul class="space-y-3.5 mb-8">
+{% for f in ['Unlimited services','Unlimited bookings','SMS reminders','Payment collection','AI verification','Custom branding','Priority support'] %}
+<li class="flex items-center gap-3 text-sm text-slate-300"><svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>{{ f }}</li>
+{% endfor %}
+</ul>
+<a href="/register" class="block w-full py-3.5 rounded-xl bg-gradient-to-r from-n-500 to-purple-500 text-center font-bold hover:opacity-90 transition shadow-lg shadow-n-500/25 btn-g">Start Free Trial</a>
+</div>
+<div class="pcard bg-[#0c101d]/60 border border-white/5 rounded-3xl p-8">
+<p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Business</p>
+<div class="mb-6"><span class="text-5xl font-extrabold">$79</span><span class="text-slate-500 text-sm">/month</span></div>
+<ul class="space-y-3.5 mb-8">
+{% for f in ['Everything in Pro','Multiple staff','Advanced analytics','API access','Dedicated manager','Custom integrations'] %}
+<li class="flex items-center gap-3 text-sm text-slate-300"><svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>{{ f }}</li>
+{% endfor %}
+</ul>
+<a href="/register" class="block w-full py-3.5 rounded-xl border border-white/10 text-center font-semibold hover:bg-white/5 transition">Contact Sales</a>
+</div>
+</div>
+</div>
+</section>
+
+<section id="testimonials" class="py-28">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-16">
+<span class="inline-block px-4 py-1.5 rounded-full bg-n-500/10 text-n-400 text-xs font-bold uppercase tracking-wider mb-4">Testimonials</span>
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Loved by businesses worldwide</h2>
+</div>
+<div class="grid md:grid-cols-3 gap-6">
+{% for name, role, quote in [
+('Sarah Johnson','Salon Owner','Noomly transformed our business. No-shows dropped by 75% and our customers love booking online.'),
+('Dr. Ahmed','Clinic Manager','The AI verification feature is a game-changer. Our confirmations are automated and professional.'),
+('Mike Chen','Barbershop Owner','Setup took 5 minutes. We went from phone calls to 24/7 online bookings overnight.')
+] %}
+<div class="rev bg-[#0c101d]/60 border border-white/5 rounded-2xl p-8">
+<div class="flex gap-1 text-amber-400 mb-4">{% for i in range(5) %}<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>{% endfor %}</div>
+<p class="text-slate-300 leading-relaxed mb-6 text-sm">"{{ quote }}"</p>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-n-400 to-purple-500 flex items-center justify-center font-bold text-sm">{{ name[0] }}{{ name.split()[1][0] }}</div>
+<div><p class="font-semibold text-sm">{{ name }}</p><p class="text-xs text-slate-500">{{ role }}</p></div>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+</section>
+
+<section class="py-28">
+<div class="max-w-4xl mx-auto px-6 text-center">
+<div class="bg-gradient-to-r from-n-600 to-purple-600 rounded-3xl p-12 lg:p-16 relative overflow-hidden">
+<div class="absolute inset-0 opacity-10" style="background-image:url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+<div class="relative z-10">
+<h2 class="text-4xl lg:text-5xl font-extrabold mb-4">Ready to grow your business?</h2>
+<p class="text-xl text-white/80 mb-8">Join 500+ businesses already using Noomly. Start free today.</p>
+<a href="/register" class="inline-block px-10 py-4 rounded-2xl bg-white text-n-600 font-bold text-lg hover:bg-slate-100 transition shadow-2xl">Get Started Free →</a>
+</div>
+</div>
+</div>
+</section>
+
+<footer class="border-t border-white/5 py-12 bg-white/[.01]">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid md:grid-cols-4 gap-8 mb-8">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-n-500 to-purple-500 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+<span class="text-lg font-extrabold">Noomly</span>
+</div>
+<p class="text-sm text-slate-500 leading-relaxed">The smart booking platform for modern businesses.</p>
+</div>
+{% for title, links in [('Product',['Features','Pricing','API','Changelog']),('Company',['About','Blog','Careers','Press']),('Support',['Help Center','Contact','Privacy','Terms'])] %}
+<div>
+<h4 class="font-semibold mb-4 text-sm">{{ title }}</h4>
+<ul class="space-y-2.5">{% for l in links %}<li><a href="#" class="text-sm text-slate-500 hover:text-white transition-colors">{{ l }}</a></li>{% endfor %}</ul>
+</div>
+{% endfor %}
+</div>
+<div class="border-t border-white/5 pt-8 text-center text-sm text-slate-600">&copy; 2026 Noomly. All rights reserved.</div>
+</div>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:.08});
+document.querySelectorAll('.fe,.pcard,.rev').forEach(e=>{e.style.opacity='0';e.target&&e.target.style?e.target.style.transform='translateY(25px)':e.style.transform='translateY(25px)';e.style.transition='all .6s cubic-bezier(.4,0,.2,1)';obs.observe(e)});
+</script>
+</body>
+</html>
