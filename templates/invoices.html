@@ -1,0 +1,65 @@
+{% from 'macros.html' import sidebar, topbar with context %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoices — Noomly</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{brand:{50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'}}}}}</script>
+<style>*{font-family:'Inter',sans-serif}body{transition:background-color .3s,color .3s}.sidebar{width:260px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);border-right:1px solid #e2e8f0}.dark .sidebar{background:linear-gradient(180deg,#0f0f17 0%,#111118 100%);border-right-color:rgba(255,255,255,.05)}.nav-item{transition:all .2s;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:#64748b;cursor:pointer}.dark .nav-item{color:#94a3b8}.nav-item:hover{background:rgba(99,102,241,.06);color:#6366f1}.nav-item.active{background:rgba(99,102,241,.1);color:#6366f1;font-weight:600}.main-content{flex:1;margin-left:260px;overflow-x:hidden}.topbar{background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid #e2e8f0}.dark .topbar{background:rgba(10,10,15,.9);border-bottom-color:rgba(255,255,255,.05)}</style>
+</head>
+<body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen flex">
+{{ sidebar('Invoices') }}
+<div class="main-content">
+{{ topbar('Invoices') }}
+<main class="p-6 lg:p-8">
+{% if appointments %}
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden">
+<table class="w-full">
+<thead><tr class="border-b border-slate-100 dark:border-white/5">
+<th class="text-left px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Customer</th>
+<th class="text-left px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Service</th>
+<th class="text-left px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Date</th>
+<th class="text-left px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Amount</th>
+<th class="text-left px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+</tr></thead>
+<tbody>
+{% for a in appointments %}
+<tr class="border-b border-slate-50 dark:border-white/[.03] hover:bg-slate-50 dark:hover:bg-white/[.02] transition">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white">{{ a.cust_name[0] }}</div>
+<div>
+<p class="text-sm font-semibold text-slate-900 dark:text-white">{{ a.cust_name }}</p>
+<p class="text-xs text-slate-500">{{ a.cust_email }}</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4"><span class="text-sm text-slate-700 dark:text-slate-300">{{ a.service.name if a.service else 'N/A' }}</span></td>
+<td class="px-6 py-4"><span class="text-sm text-slate-700 dark:text-slate-300">{{ a.created_at.strftime('%b %d, %Y') }}</span></td>
+<td class="px-6 py-4"><span class="text-sm font-bold text-slate-900 dark:text-white">${{ '%.2f'|format(a.payment_amount) }}</span></td>
+<td class="px-6 py-4">
+{% if a.payment_status=='completed' %}
+<span class="px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[11px] font-bold uppercase tracking-wider border border-green-200 dark:border-green-500/20">Paid</span>
+{% else %}
+<span class="px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold uppercase tracking-wider border border-amber-200 dark:border-amber-500/20">Unpaid</span>
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</tbody></table>
+</div>
+{% else %}
+<div class="text-center py-20">
+<div class="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-white/[.03] flex items-center justify-center mx-auto mb-5"><svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg></div>
+<h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">No invoices yet</h3>
+<p class="text-sm text-slate-500">Invoices will appear here when customers book paid services</p>
+</div>
+{% endif %}
+</main>
+</div>
+<script>function toggleSidebar(){document.getElementById('sidebar').classList.toggle('-translate-x-full')}function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}initTheme();</script>
+</body>
+</html>

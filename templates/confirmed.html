@@ -5,61 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Booking Confirmed — Noomly</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif']},colors:{n:{50:'#f0f4ff',100:'#dbe4ff',200:'#bac8ff',300:'#91a7ff',400:'#748ffc',500:'#5c7cfa',600:'#4c6ef5',700:'#4263eb',800:'#3b5bdb',900:'#364fc7'}}}}}</script>
-<style>
-*{font-family:'Plus Jakarta Sans',sans-serif}
-body{background:#06080f;min-height:100vh}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.fu{animation:fadeUp .6s ease-out both}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{brand:{50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'}}}}}</script>
+<style>*{font-family:'Inter',sans-serif}body{transition:background-color .3s,color .3s}
 @keyframes checkScale{0%{transform:scale(0) rotate(-45deg)}100%{transform:scale(1) rotate(0)}}.chk{animation:checkScale .5s ease-out .3s both}
 </style>
 </head>
-<body class="text-white flex items-center justify-center p-4">
-<div class="w-full max-w-md text-center fu">
+<body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 flex items-center justify-center p-4 min-h-screen">
+<div class="w-full max-w-md text-center">
 <div class="w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mx-auto mb-8 shadow-xl shadow-green-500/30 chk">
-<svg class="w-12 h-12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+<svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
 </div>
-<h1 class="text-3xl font-extrabold mb-3">Booking Confirmed!</h1>
-<p class="text-slate-400 mb-8">Your appointment has been successfully booked.</p>
+<h1 class="text-3xl font-extrabold mb-3 text-slate-900 dark:text-white">Booking Confirmed!</h1>
+<p class="text-slate-500 dark:text-slate-400 mb-8">Your appointment has been successfully booked.</p>
 
-<div class="bg-[#0c101d]/60 border border-white/5 rounded-2xl p-6 mb-8 text-left space-y-4">
-<div class="flex items-center justify-between pb-3 border-b border-white/5">
-<span class="text-sm text-slate-400">Business</span>
-<span class="text-sm font-semibold">{{ business.name }}</span>
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6 mb-8 text-left space-y-4">
+<div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+<span class="text-sm text-slate-500">Business</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">{{ business.name }}</span>
 </div>
-<div class="flex items-center justify-between pb-3 border-b border-white/5">
-<span class="text-sm text-slate-400">Service</span>
-<span class="text-sm font-semibold">{{ appointment.service.name }}</span>
+<div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+<span class="text-sm text-slate-500">Service</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">{{ appointment.service.name }}</span>
 </div>
-<div class="flex items-center justify-between pb-3 border-b border-white/5">
-<span class="text-sm text-slate-400">Date</span>
-<span class="text-sm font-semibold">{{ appointment.date.strftime('%B %d, %Y') }}</span>
+<div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+<span class="text-sm text-slate-500">Date</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">{{ appointment.date.strftime('%B %d, %Y') }}</span>
 </div>
-<div class="flex items-center justify-between pb-3 border-b border-white/5">
-<span class="text-sm text-slate-400">Time</span>
-<span class="text-sm font-semibold">{{ appointment.time }}</span>
+<div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+<span class="text-sm text-slate-500">Time</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">{{ appointment.time }}</span>
 </div>
-<div class="flex items-center justify-between pb-3 border-b border-white/5">
-<span class="text-sm text-slate-400">Customer</span>
-<span class="text-sm font-semibold">{{ appointment.cust_name }}</span>
+<div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+<span class="text-sm text-slate-500">Customer</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">{{ appointment.cust_name }}</span>
 </div>
 <div class="flex items-center justify-between">
-<span class="text-sm text-slate-400">Confirmation Code</span>
-<span class="text-lg font-extrabold text-n-400 font-mono">{{ appointment.confirmation_code }}</span>
+<span class="text-sm text-slate-500">Confirmation Code</span>
+<span class="text-lg font-extrabold text-brand-500 font-mono">{{ appointment.confirmation_code }}</span>
 </div>
 {% if appointment.payment_amount > 0 %}
-<div class="flex items-center justify-between pt-3 border-t border-white/5">
-<span class="text-sm text-slate-400">Amount Due</span>
-<span class="text-lg font-extrabold text-green-400">${{ '%.2f'|format(appointment.payment_amount) }}</span>
+<div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-white/5">
+<span class="text-sm text-slate-500">Amount Due</span>
+<span class="text-lg font-extrabold text-green-600 dark:text-green-400">${{ '%.2f'|format(appointment.payment_amount) }}</span>
 </div>
 {% endif %}
 </div>
 
-<div class="bg-n-500/10 border border-n-500/20 rounded-xl p-4 mb-6">
-<p class="text-sm text-n-300">A confirmation email has been sent to <strong>{{ appointment.cust_email }}</strong></p>
+<div class="bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20 rounded-xl p-4 mb-6">
+<p class="text-sm text-brand-700 dark:text-brand-300">A confirmation email has been sent to <strong>{{ appointment.cust_email }}</strong>. Our AI agent will call you shortly to confirm.</p>
 </div>
 
-<a href="/book/{{ business.slug }}" class="inline-block px-8 py-3 rounded-xl border border-white/10 text-sm font-semibold hover:bg-white/5 transition">Book Another Appointment</a>
+<a href="/book/{{ business.slug }}" class="inline-block px-8 py-3 rounded-xl border-2 border-slate-200 dark:border-white/10 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition">Book Another Appointment</a>
 </div>
 </body>
 </html>
