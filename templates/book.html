@@ -8,23 +8,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{brand:{50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'}}}}}</script>
 <style>
-*{font-family:'Inter',sans-serif}
-body{transition:background-color .3s,color .3s}
-.svc-card{transition:all .2s;cursor:pointer;border:2px solid transparent}
-.svc-card:hover{border-color:#c7d2fe}
+*{font-family:'Inter',sans-serif}body{transition:background-color .3s,color .3s}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{animation:fadeInUp .4s ease-out both}
+.step{transition:all .3s ease;opacity:.4;transform:scale(.95)}
+.step.active{opacity:1;transform:scale(1)}
+.step.done{opacity:1;transform:scale(1)}
+.svc-card{transition:all .25s cubic-bezier(.4,0,.2,1);cursor:pointer;border:2px solid transparent}
+.svc-card:hover{border-color:#c7d2fe;transform:translateY(-2px)}
 .dark .svc-card:hover{border-color:rgba(99,102,241,.3)}
-.svc-card.selected{border-color:#6366f1;background:rgba(99,102,241,.05)}
-.dark .svc-card.selected{border-color:#6366f1;background:rgba(99,102,241,.1)}
-.slot-btn{transition:all .15s;cursor:pointer;border:2px solid transparent}
+.svc-card.selected{border-color:#6366f1;background:rgba(99,102,241,.05);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.dark .svc-card.selected{border-color:#6366f1;background:rgba(99,102,241,.1);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.slot-btn{transition:all .2s;cursor:pointer;border:2px solid transparent}
 .slot-btn:hover{border-color:#c7d2fe;background:rgba(99,102,241,.05)}
 .dark .slot-btn:hover{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.1)}
-.slot-btn.selected{border-color:#6366f1;background:rgba(99,102,241,.1);color:#6366f1;font-weight:600}
+.slot-btn.selected{border-color:#6366f1;background:rgba(99,102,241,.1);color:#6366f1;font-weight:600;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.step-section{display:none}.step-section.active{display:block;animation:fadeInUp .4s ease-out}
 </style>
 </head>
 <body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen">
-<div class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+<nav class="bg-white/80 dark:bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5">
+<div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+<a href="/" class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center shadow-lg shadow-brand-500/30"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+<span class="text-xl font-extrabold tracking-tight">Noomly</span>
+</a>
+<button onclick="toggleTheme()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition" title="Toggle theme">
+<svg id="sun-icon" class="w-5 h-5 text-slate-600 dark:text-slate-400 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+<svg id="moon-icon" class="w-5 h-5 text-slate-600 dark:text-slate-400 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+</button>
+</div>
+</nav>
+
+<div class="min-h-screen flex items-start justify-center p-4 sm:p-8 pt-12">
 <div class="w-full max-w-2xl">
-<div class="text-center mb-10">
+<div class="text-center mb-8 animate-in">
 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-brand-500/30">
 <span class="text-2xl font-extrabold text-white">{{ business.name[0] }}</span>
 </div>
@@ -33,23 +51,32 @@ body{transition:background-color .3s,color .3s}
 {% if business.city %}<p class="text-sm text-slate-500 mt-1">{{ business.city }}{% if business.country %}, {{ business.country }}{% endif %}</p>{% endif %}
 </div>
 
+<div class="flex items-center justify-center gap-2 mb-8 animate-in">
+{% for num,label in [(1,'Service'),(2,'Date'),(3,'Time'),(4,'Details')] %}
+<div class="step {% if num==1 %}active{% endif %} flex items-center gap-2" id="step-indicator-{{ num }}">
+<div class="w-8 h-8 rounded-full {% if num==1 %}bg-brand-500 text-white{% else %}bg-slate-200 dark:bg-white/10 text-slate-500{% endif %} flex items-center justify-center text-sm font-bold transition-all" id="step-circle-{{ num }}">{{ num }}</div>
+<span class="text-xs font-medium text-slate-500 hidden sm:block">{{ label }}</span>
+</div>
+{% if num < 4 %}<div class="w-8 h-0.5 bg-slate-200 dark:bg-white/10 rounded-full" id="step-line-{{ num }}"></div>{% endif %}
+{% endfor %}
+</div>
+
 {% with msgs = get_flashed_messages(with_categories=true) %}{% if msgs %}{% for cat, msg in msgs %}
-<div class="mb-6 px-4 py-3 rounded-xl text-sm font-medium {% if cat=='error' %}bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400{% else %}bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400{% endif %}">{{ msg }}</div>
+<div class="mb-6 px-5 py-4 rounded-xl text-sm font-medium {% if cat=='error' %}bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400{% else %}bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400{% endif %}">{{ msg }}</div>
 {% endfor %}{% endif %}{% endwith %}
 
-<form id="bookForm" method="POST" action="/book/{{ business.slug }}/confirm" class="space-y-6">
-<!-- Step 1: Service -->
-<div>
-<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">1. Select Service</h3>
+<form id="bookForm" method="POST" action="/book/{{ business.slug }}/confirm">
+<div class="step-section active" id="section-1">
+<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Select Service</h3>
 <div class="grid sm:grid-cols-2 gap-3" id="svcGrid">
 {% for s in services %}
 <div class="svc-card bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-xl p-4" data-id="{{ s.id }}" onclick="selectSvc('{{ s.id }}',{{ s.duration }},{{ s.price }},this)">
 <input type="radio" name="service_id" value="{{ s.id }}" class="hidden">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:{{ s.color }}15">
+<div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:{{ s.color }}15">
 <span class="text-lg" style="color:{{ s.color }}">&#9733;</span>
 </div>
-<div class="flex-1">
+<div class="flex-1 min-w-0">
 <p class="font-semibold text-sm text-slate-900 dark:text-white">{{ s.name }}</p>
 <p class="text-xs text-slate-500">{{ s.duration }} min &middot; ${{ '%.0f'|format(s.price) }}</p>
 </div>
@@ -57,26 +84,34 @@ body{transition:background-color .3s,color .3s}
 </div>
 {% endfor %}
 </div>
+<div class="mt-6 flex justify-end">
+<button type="button" onclick="goToStep(2)" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm hover:opacity-90 transition shadow-lg shadow-brand-500/25" id="btn-step1" disabled>Continue →</button>
+</div>
 </div>
 
-<!-- Step 2: Date -->
-<div>
-<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">2. Pick a Date</h3>
+<div class="step-section" id="section-2">
+<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Pick a Date</h3>
 <input type="date" name="date" id="datePicker" required class="w-full px-4 py-3.5 rounded-xl bg-white dark:bg-white/[.04] border border-slate-200 dark:border-white/[.08] text-slate-900 dark:text-white text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition" onchange="loadSlots()">
+<div class="mt-6 flex justify-between">
+<button type="button" onclick="goToStep(1)" class="px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition">← Back</button>
+<button type="button" onclick="goToStep(3)" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm hover:opacity-90 transition shadow-lg shadow-brand-500/25" id="btn-step2" disabled>Continue →</button>
+</div>
 </div>
 
-<!-- Step 3: Time -->
-<div>
-<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">3. Select Time</h3>
+<div class="step-section" id="section-3">
+<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Select Time</h3>
 <div id="slotsContainer" class="grid grid-cols-4 sm:grid-cols-6 gap-2">
-<p class="text-sm text-slate-400 col-span-full py-4 text-center">Select a service and date first</p>
+<p class="text-sm text-slate-400 col-span-full py-4 text-center">Pick a date first to see available times</p>
 </div>
 <input type="hidden" name="time" id="selectedTime" required>
+<div class="mt-6 flex justify-between">
+<button type="button" onclick="goToStep(2)" class="px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition">← Back</button>
+<button type="button" onclick="goToStep(4)" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm hover:opacity-90 transition shadow-lg shadow-brand-500/25" id="btn-step3" disabled>Continue →</button>
+</div>
 </div>
 
-<!-- Step 4: Details -->
-<div>
-<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">4. Your Details</h3>
+<div class="step-section" id="section-4">
+<h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Your Details</h3>
 <div class="space-y-3">
 <div class="grid sm:grid-cols-2 gap-3">
 <input type="text" name="name" required placeholder="Full name *" class="w-full px-4 py-3.5 rounded-xl bg-white dark:bg-white/[.04] border border-slate-200 dark:border-white/[.08] text-slate-900 dark:text-white text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition">
@@ -85,27 +120,48 @@ body{transition:background-color .3s,color .3s}
 <input type="tel" name="phone" placeholder="Phone (optional — for AI confirmation call)" class="w-full px-4 py-3.5 rounded-xl bg-white dark:bg-white/[.04] border border-slate-200 dark:border-white/[.08] text-slate-900 dark:text-white text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition">
 <textarea name="notes" rows="2" placeholder="Any special requests? (optional)" class="w-full px-4 py-3.5 rounded-xl bg-white dark:bg-white/[.04] border border-slate-200 dark:border-white/[.08] text-slate-900 dark:text-white text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition resize-none"></textarea>
 </div>
+<div id="summary-box" class="mt-4 bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20 rounded-xl p-4">
+<p class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-2">Booking Summary</p>
+<p class="text-sm text-slate-700 dark:text-slate-300" id="summary-text"></p>
 </div>
-
-<button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm hover:opacity-90 transition shadow-lg shadow-brand-500/25">
-Confirm Booking
-</button>
+<div class="mt-6 flex justify-between">
+<button type="button" onclick="goToStep(3)" class="px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition">← Back</button>
+<button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm hover:opacity-90 transition shadow-lg shadow-brand-500/25">Confirm Booking</button>
+</div>
+</div>
 </form>
 </div>
 </div>
 
 <script>
-let selectedSvc=null;
+let selectedSvc=null,currentStep=1;
 function selectSvc(id,dur,price,el){
-selectedSvc={id,dur:dur,price:price};
+selectedSvc={id,dur:dur,price:price,name:el.querySelector('p').textContent};
 document.querySelectorAll('.svc-card').forEach(c=>{c.classList.remove('selected');c.querySelector('input').checked=false});
-el.classList.add('selected');
-el.querySelector('input').checked=true;
-if(document.getElementById('datePicker').value)loadSlots();
+el.classList.add('selected');el.querySelector('input').checked=true;
+document.getElementById('btn-step1').disabled=false;
+}
+function goToStep(n){
+if(n===2&&!selectedSvc)return;
+if(n===3&&!document.getElementById('datePicker').value)return;
+if(n===4&&(!document.getElementById('selectedTime').value))return;
+document.querySelectorAll('.step-section').forEach(s=>s.classList.remove('active'));
+document.getElementById('section-'+n).classList.add('active');
+for(let i=1;i<=4;i++){
+const c=document.getElementById('step-circle-'+i);
+const s=document.getElementById('step-indicator-'+i);
+if(i<n){c.className='w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold transition-all';s.className='step done flex items-center gap-2'}
+else if(i===n){c.className='w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center text-sm font-bold transition-all';s.className='step active flex items-center gap-2'}
+else{c.className='w-8 h-8 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 flex items-center justify-center text-sm font-bold transition-all';s.className='step flex items-center gap-2'}
+if(i<4){const line=document.getElementById('step-line-'+i);if(line)line.className=i<n?'w-8 h-0.5 bg-green-500 rounded-full transition-all':'w-8 h-0.5 bg-slate-200 dark:bg-white/10 rounded-full transition-all'}
+}
+currentStep=n;
+if(n===4)updateSummary();
 }
 function loadSlots(){
 const dp=document.getElementById('datePicker');
 if(!dp.value||!selectedSvc)return;
+document.getElementById('btn-step2').disabled=false;
 fetch('/api/slots/{{ business.slug }}/'+dp.value+'?service_id='+selectedSvc.id)
 .then(r=>r.json())
 .then(slots=>{
@@ -113,19 +169,32 @@ const c=document.getElementById('slotsContainer');
 if(!slots.length){c.innerHTML='<p class="text-sm text-slate-400 col-span-full py-4 text-center">No available slots for this date</p>';return}
 c.innerHTML=slots.map(s=>'<button type="button" onclick="selectSlot(\''+s+'\',this)" class="slot-btn px-3 py-2.5 rounded-xl bg-white dark:bg-white/[.04] border border-slate-200 dark:border-white/[.08] text-sm font-medium text-slate-700 dark:text-slate-300">'+s+'</button>').join('');
 document.getElementById('selectedTime').value='';
+document.getElementById('btn-step3').disabled=true;
 });
 }
 function selectSlot(t,el){
 document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('selected'));
 el.classList.add('selected');
 document.getElementById('selectedTime').value=t;
+document.getElementById('btn-step3').disabled=false;
+}
+function updateSummary(){
+if(!selectedSvc)return;
+const dp=document.getElementById('datePicker').value;
+const time=document.getElementById('selectedTime').value;
+const d=new Date(dp+'T00:00:00');
+const dateStr=d.toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+document.getElementById('summary-text').textContent=selectedSvc.name+' | '+dateStr+' at '+time+' | $'+selectedSvc.price;
 }
 document.getElementById('bookForm').addEventListener('submit',function(e){
-if(!document.querySelector('.svc-card.selected')){e.preventDefault();alert('Please select a service');return}
-if(!document.getElementById('selectedTime').value){e.preventDefault();alert('Please select a time slot');return}
+if(!document.querySelector('.svc-card.selected')){e.preventDefault();goToStep(1);return}
+if(!document.getElementById('selectedTime').value){e.preventDefault();goToStep(3);return}
 });
 const today=new Date().toISOString().split('T')[0];
 document.getElementById('datePicker').setAttribute('min',today);
+function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}
+function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+initTheme();
 </script>
 </body>
 </html>

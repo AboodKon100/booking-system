@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Noomly - Smart booking platform for service businesses. AI confirmation calls, auto invoicing, 24/7 online booking.">
 <title>Noomly — Never Miss Another Appointment</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -10,6 +11,34 @@
 <style>
 *{font-family:'Inter',sans-serif}
 body{transition:background-color .3s,color .3s}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.slide-left{opacity:0;transform:translateX(-40px);transition:opacity .7s ease,transform .7s ease}
+.slide-left.visible{opacity:1;transform:translateX(0)}
+.slide-right{opacity:0;transform:translateX(40px);transition:opacity .7s ease,transform .7s ease}
+.slide-right.visible{opacity:1;transform:translateX(0)}
+.scale-in{opacity:0;transform:scale(.85);transition:opacity .6s ease,transform .6s ease}
+.scale-in.visible{opacity:1;transform:scale(1)}
+.delay-1{transition-delay:.1s}.delay-2{transition-delay:.2s}.delay-3{transition-delay:.3s}.delay-4{transition-delay:.4s}
+.hero-gradient{background:linear-gradient(-45deg,#6366f1,#8b5cf6,#ec4899,#6366f1);background-size:400% 400%;animation:gradient-shift 8s ease infinite}
+.glass{background:rgba(255,255,255,.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1)}
+.feature-card{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.feature-card:hover{transform:translateY(-8px);box-shadow:0 25px 50px -12px rgba(99,102,241,.2)}
+.dark .feature-card:hover{box-shadow:0 25px 50px -12px rgba(99,102,241,.1)}
+.pricing-card{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.pricing-card:hover{transform:translateY(-8px)}
+.business-card{transition:all .3s cubic-bezier(.4,0,.2,1)}
+.business-card:hover{transform:translateY(-4px) scale(1.02)}
+.btn-primary{transition:all .3s cubic-bezier(.4,0,.2,1)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 20px 40px -8px rgba(99,102,241,.4)}
+.btn-primary:active{transform:translateY(0)}
 </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-[#0a0a0f] dark:text-slate-100">
@@ -28,8 +57,12 @@ body{transition:background-color .3s,color .3s}
 <a href="#businesses" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Businesses</a>
 </div>
 <div class="flex items-center gap-3">
+<button onclick="toggleTheme()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition" title="Toggle theme">
+<svg id="sun-icon" class="w-5 h-5 text-slate-600 dark:text-slate-400 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+<svg id="moon-icon" class="w-5 h-5 text-slate-600 dark:text-slate-400 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+</button>
 <a href="/login" class="text-sm font-medium px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition text-slate-700 dark:text-slate-300">Sign In</a>
-<a href="/register" class="text-sm font-bold px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white hover:opacity-90 transition shadow-lg shadow-brand-500/25">Get Started Free</a>
+<a href="/register" class="btn-primary text-sm font-bold px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white shadow-lg shadow-brand-500/25">Get Started Free</a>
 </div>
 </div>
 </nav>
@@ -39,22 +72,22 @@ body{transition:background-color .3s,color .3s}
 <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]"></div>
 <div class="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center relative z-10 w-full">
 <div>
-<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20 mb-8">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20 mb-8 fade-in">
 <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
 <span class="text-sm font-medium text-brand-700 dark:text-brand-300">Now in Beta — 500+ businesses</span>
 </div>
-<h1 class="text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6">
+<h1 class="text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6 fade-in delay-1">
 Your Business,<br>
-<span class="bg-gradient-to-r from-brand-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">Always Open.</span>
+<span class="hero-gradient bg-clip-text text-transparent">Always Open.</span>
 </h1>
-<p class="text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed mb-8">
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed mb-8 fade-in delay-2">
 Let customers book 24/7. AI verification, automatic invoicing, secure payments. The smart booking platform that grows with you.
 </p>
-<div class="flex flex-col sm:flex-row gap-4 mb-10">
-<a href="/register" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-base hover:opacity-90 transition text-center shadow-xl shadow-brand-500/30">Start Free Trial</a>
+<div class="flex flex-col sm:flex-row gap-4 mb-10 fade-in delay-3">
+<a href="/register" class="btn-primary px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-base text-center shadow-xl shadow-brand-500/30">Start Free Trial</a>
 <a href="#features" class="px-8 py-4 rounded-2xl border-2 border-slate-200 dark:border-white/10 font-semibold text-base hover:bg-slate-50 dark:hover:bg-white/5 transition text-center">See Features</a>
 </div>
-<div class="flex items-center gap-6">
+<div class="flex items-center gap-6 fade-in delay-4">
 <div class="flex -space-x-3">
 {% for c in ['from-blue-400 to-blue-600','from-purple-400 to-purple-600','from-pink-400 to-pink-600','from-emerald-400 to-emerald-600','from-amber-400 to-amber-600'] %}
 <div class="w-10 h-10 rounded-full bg-gradient-to-br {{ c }} border-2 border-white dark:border-[#0a0a0f] shadow-md"></div>
@@ -67,7 +100,7 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </div>
 
-<div class="relative">
+<div class="relative slide-right">
 <div class="absolute inset-0 bg-gradient-to-r from-brand-500/5 to-purple-500/5 rounded-3xl blur-3xl"></div>
 <div class="relative bg-white dark:bg-[#111118] rounded-3xl border border-slate-200 dark:border-white/5 p-6 shadow-2xl shadow-slate-200 dark:shadow-none">
 <div class="flex items-center gap-2 mb-5 pb-4 border-b border-slate-100 dark:border-white/5">
@@ -77,9 +110,13 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 <span class="text-xs text-slate-400 ml-2 font-medium">Dashboard Preview</span>
 </div>
 <div class="grid grid-cols-3 gap-3 mb-5">
-<div class="bg-slate-50 dark:bg-white/[.03] rounded-2xl p-4 border border-slate-100 dark:border-white/[.03]"><p class="text-[11px] text-slate-500 mb-1 uppercase tracking-wider font-medium">Today</p><p class="text-2xl font-extrabold text-slate-900 dark:text-white">24</p><p class="text-[11px] text-green-500 font-semibold">+12%</p></div>
-<div class="bg-slate-50 dark:bg-white/[.03] rounded-2xl p-4 border border-slate-100 dark:border-white/[.03]"><p class="text-[11px] text-slate-500 mb-1 uppercase tracking-wider font-medium">Revenue</p><p class="text-2xl font-extrabold text-green-600 dark:text-green-400">$2,450</p><p class="text-[11px] text-green-500 font-semibold">+8%</p></div>
-<div class="bg-slate-50 dark:bg-white/[.03] rounded-2xl p-4 border border-slate-100 dark:border-white/[.03]"><p class="text-[11px] text-slate-500 mb-1 uppercase tracking-wider font-medium">Customers</p><p class="text-2xl font-extrabold text-slate-900 dark:text-white">186</p><p class="text-[11px] text-green-500 font-semibold">+15%</p></div>
+{% for label,value,change in [('Today','24','+12%'),('Revenue','$2,450','+8%'),('Customers','186','+15%')] %}
+<div class="bg-slate-50 dark:bg-white/[.03] rounded-2xl p-4 border border-slate-100 dark:border-white/[.03]">
+<p class="text-[11px] text-slate-500 mb-1 uppercase tracking-wider font-medium">{{ label }}</p>
+<p class="text-2xl font-extrabold text-slate-900 dark:text-white">{{ value }}</p>
+<p class="text-[11px] text-green-500 font-semibold">{{ change }}</p>
+</div>
+{% endfor %}
 </div>
 <div class="space-y-2">
 {% for name, svc, status, bg in [('Sarah Johnson','Hair Styling','Confirmed','bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-500/20'),('Mike Chen','Dental Checkup','Pending','bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20'),('Emma Wilson','Massage','AI Verified','bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20'),('Alex Kim','Manicure','Completed','bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20')] %}
@@ -99,21 +136,21 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 
 <section id="features" class="py-28 bg-slate-50/50 dark:bg-white/[.01] border-y border-slate-200 dark:border-white/5">
 <div class="max-w-7xl mx-auto px-6">
-<div class="text-center mb-16">
+<div class="text-center mb-16 fade-in">
 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">Features</span>
 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Everything you need to <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">scale</span></h2>
-<p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Powerful tools designed for modern businesses.</p>
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Powerful tools designed for modern service businesses.</p>
 </div>
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-{% for icon, title, desc, grad in [
-('M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z','24/7 Online Booking','Customers book anytime, from any device. No more phone calls.','from-brand-500 to-blue-500'),
-('M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z','AI Confirmation Calls','Our AI calls customers to confirm appointments. Reduces no-shows by 80%.','from-purple-500 to-pink-500'),
-('M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z','Auto Invoicing','Professional invoices generated and emailed automatically after payment.','from-emerald-500 to-green-500'),
-('M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z','Secure Payments','Accept deposits and full payments online. Stripe-powered.','from-amber-500 to-orange-500'),
-('M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z','Analytics Dashboard','Track revenue, appointments, and customer insights with beautiful charts.','from-pink-500 to-rose-500'),
-('M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z','Mobile First','Fully responsive. Customers book from any device.','from-cyan-500 to-blue-500')
+{% for icon, title, desc, grad, delay in [
+('M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z','24/7 Online Booking','Customers book anytime, from any device. No more phone calls.','from-brand-500 to-blue-500','delay-1'),
+('M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z','AI Confirmation Calls','Our AI calls customers to confirm. Reduces no-shows by 80%.','from-purple-500 to-pink-500','delay-2'),
+('M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z','Auto Invoicing','Professional invoices generated and emailed automatically.','from-emerald-500 to-green-500','delay-3'),
+('M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z','Secure Payments','Accept deposits and full payments online. Stripe-powered.','from-amber-500 to-orange-500','delay-4'),
+('M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z','Analytics Dashboard','Track revenue, appointments, and customer insights with charts.','from-pink-500 to-rose-500','delay-1'),
+('M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z','Mobile First','Fully responsive. Customers book from any device.','from-cyan-500 to-blue-500','delay-2')
 ] %}
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-7 hover:border-brand-300 dark:hover:border-brand-500/30 transition-all hover:-translate-y-1 duration-300">
+<div class="feature-card bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-7 fade-in {{ delay }}">
 <div class="w-12 h-12 rounded-xl bg-gradient-to-br {{ grad }} flex items-center justify-center mb-5 shadow-lg">
 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ icon }}"/></svg>
 </div>
@@ -125,19 +162,32 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </section>
 
+<section class="py-20">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid md:grid-cols-4 gap-6 text-center">
+{% for value,label,sub in [('500+','Businesses','Active on Noomly'),('2,000+','Bookings','Made this month'),('92%','Confirm Rate','AI verification'),('4.9/5','Rating','Customer satisfaction')] %}
+<div class="fade-in {% if loop.index==1 %}delay-1{% elif loop.index==2 %}delay-2{% elif loop.index==3 %}delay-3{% else %}delay-4{% endif %}">
+<p class="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent" data-count="{{ value.replace('+','').replace('/','') }}" data-suffix="{{ '+' if '+' in value else '' }}">{{ value }}</p>
+<p class="text-lg font-bold text-slate-900 dark:text-white mt-2">{{ label }}</p>
+<p class="text-sm text-slate-500">{{ sub }}</p>
+</div>
+{% endfor %}
+</div>
+</div>
+</section>
+
 <section id="businesses" class="py-28 border-y border-slate-200 dark:border-white/5">
 <div class="max-w-7xl mx-auto px-6">
-<div class="text-center mb-16">
+<div class="text-center mb-16 fade-in">
 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">For Every Business</span>
 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Built for <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">your industry</span></h2>
 <p class="text-lg text-slate-600 dark:text-slate-400">Tailored features for every type of service business.</p>
 </div>
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-{% set icons = {'salon':'&#9986;','barbershop':'&#9986;','clinic':'&#128138;','dental':'&#129463;','gym':'&#127947;','spa':'&#128134;','restaurant':'&#127860;','salon_pet':'&#128049;','studio':'&#128247;','tutoring':'&#128218;','consulting':'&#128188;','cleaning':'&#128719;','auto':'&#9881;','other':'&#128736;'} %}
 {% for key, bt in BUSINESS_TYPES.items() %}
-<a href="/register" class="group bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-brand-300 dark:hover:border-brand-500/30 transition-all hover:-translate-y-1 text-center">
+<a href="/register" class="business-card group bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-brand-300 dark:hover:border-brand-500/30 text-center fade-in delay-{{ loop.index0 % 4 + 1 }}">
 <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-brand-100 dark:group-hover:bg-brand-500/20 transition">
-<span class="text-2xl">{{ icons.get(key, '&#128736;') }}</span>
+<span class="text-2xl">{{ bt.icon | safe }}</span>
 </div>
 <p class="font-bold text-sm text-slate-900 dark:text-white group-hover:text-brand-500 transition">{{ bt.name }}</p>
 </a>
@@ -148,7 +198,7 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 
 <section id="pricing" class="py-28 bg-slate-50/50 dark:bg-white/[.01] border-y border-slate-200 dark:border-white/5">
 <div class="max-w-7xl mx-auto px-6">
-<div class="text-center mb-16">
+<div class="text-center mb-16 fade-in">
 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">Pricing</span>
 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Simple, transparent pricing</h2>
 <p class="text-lg text-slate-600 dark:text-slate-400">Start free, upgrade when ready. No hidden fees.</p>
@@ -159,7 +209,7 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 ('Professional','$29',['Unlimited services','Unlimited bookings','SMS reminders','Payment collection','AI verification','Custom branding','Priority support'],true),
 ('Business','$79',['Everything in Pro','Multiple staff','Advanced analytics','API access','Dedicated manager','Custom integrations'],false)
 ] %}
-<div class="bg-white dark:bg-[#111118] border {% if popular %}border-brand-400 dark:border-brand-500/40 ring-2 ring-brand-500/20{% else %}border-slate-200 dark:border-white/5{% endif %} rounded-3xl p-8 relative transition-all hover:-translate-y-1">
+<div class="pricing-card bg-white dark:bg-[#111118] border {% if popular %}border-brand-400 dark:border-brand-500/40 ring-2 ring-brand-500/20{% else %}border-slate-200 dark:border-white/5{% endif %} rounded-3xl p-8 relative fade-in {% if loop.index==1 %}delay-1{% elif loop.index==2 %}delay-2{% else %}delay-3{% endif %}">
 {% if popular %}<span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-brand-500 to-purple-500 text-white text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-brand-500/25">Most Popular</span>{% endif %}
 <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">{{ plan }}</p>
 <div class="mb-6"><span class="text-5xl font-extrabold text-slate-900 dark:text-white">{{ price }}</span><span class="text-slate-500 text-sm">/month</span></div>
@@ -177,11 +227,12 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 
 <section class="py-28">
 <div class="max-w-4xl mx-auto px-6 text-center">
-<div class="bg-gradient-to-r from-brand-600 to-purple-600 rounded-3xl p-12 lg:p-16 relative overflow-hidden">
+<div class="bg-gradient-to-r from-brand-600 to-purple-600 rounded-3xl p-12 lg:p-16 relative overflow-hidden scale-in">
+<div class="absolute inset-0 opacity-10"><div class="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl"></div><div class="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div></div>
 <div class="relative z-10">
 <h2 class="text-4xl lg:text-5xl font-extrabold mb-4 text-white">Ready to grow your business?</h2>
 <p class="text-xl text-white/80 mb-8">Join 500+ businesses already using Noomly.</p>
-<a href="/register" class="inline-block px-10 py-4 rounded-2xl bg-white text-brand-600 font-bold text-lg hover:bg-slate-100 transition shadow-2xl">Get Started Free</a>
+<a href="/register" class="btn-primary inline-block px-10 py-4 rounded-2xl bg-white text-brand-600 font-bold text-lg shadow-2xl">Get Started Free</a>
 </div>
 </div>
 </div>
@@ -197,8 +248,8 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 <div class="flex gap-6">
 <a href="#features" class="text-sm text-slate-500 hover:text-brand-500 transition">Features</a>
 <a href="#pricing" class="text-sm text-slate-500 hover:text-brand-500 transition">Pricing</a>
-<a href="#" class="text-sm text-slate-500 hover:text-brand-500 transition">Privacy</a>
-<a href="#" class="text-sm text-slate-500 hover:text-brand-500 transition">Terms</a>
+<a href="/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Business Login</a>
+<a href="/customer/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Customer Login</a>
 </div>
 </div>
 <div class="border-t border-slate-200 dark:border-white/5 mt-8 pt-8 text-center text-sm text-slate-500">&copy; 2026 Noomly. All rights reserved.</div>
@@ -209,6 +260,8 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}
 function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
 initTheme();
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade-in,.slide-left,.slide-right,.scale-in').forEach(el=>observer.observe(el));
 </script>
 </body>
 </html>

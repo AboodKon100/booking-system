@@ -25,6 +25,18 @@ body{transition:background-color .3s,color .3s}
 .dark .topbar{background:rgba(10,10,15,.9);border-bottom-color:rgba(255,255,255,.05)}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
 .dark ::-webkit-scrollbar-thumb{background:#334155}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.animate-in{animation:fadeInUp .5s ease-out both}
+.animate-in-delay-1{animation:fadeInUp .5s ease-out .1s both}
+.animate-in-delay-2{animation:fadeInUp .5s ease-out .2s both}
+.animate-in-delay-3{animation:fadeInUp .5s ease-out .3s both}
+.count-up{animation:countUp .4s ease-out both}
+.stat-card{transition:all .3s cubic-bezier(.4,0,.2,1)}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -12px rgba(99,102,241,.15)}
+.dark .stat-card:hover{box-shadow:0 20px 40px -12px rgba(99,102,241,.1)}
+.appt-row{transition:all .2s}
+.appt-row:hover{transform:translateX(4px);background:rgba(99,102,241,.03)}
 </style>
 </head>
 <body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen flex">
@@ -33,52 +45,62 @@ body{transition:background-color .3s,color .3s}
 {{ topbar('Dashboard') }}
 <main class="p-6 lg:p-8">
 {{ flash_messages() }}
-<div class="mb-8">
-<h2 class="text-2xl font-extrabold mb-1">Good {{ 'morning' if stats.today < 5 else 'afternoon' if stats.today < 12 else 'evening' }}, {{ current_user.name.split()[0] }}</h2>
+
+<div class="mb-8 animate-in">
+<h2 class="text-2xl font-extrabold mb-1">Good {{ 'morning' if now.hour < 12 else 'afternoon' if now.hour < 17 else 'evening' }}, {{ current_user.name.split()[0] }} 👋</h2>
 <p class="text-slate-500 dark:text-slate-400 text-sm">Here's what's happening with your business today.</p>
 </div>
 
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-{% for label,value,color in [("Today's Bookings",stats.today,'from-brand-500 to-blue-500'),("Pending",stats.pending,'from-amber-500 to-orange-500'),("Revenue","$~{:.0f}".format(stats.revenue),'from-green-500 to-emerald-500'),("Customers",stats.customers,'from-purple-500 to-pink-500')] %}
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:-translate-y-0.5 transition">
+{% for label,value,icon,trend,trend_color,del in [
+("Today's Bookings",stats.today,'📅','Active today','text-brand-500','animate-in'),
+("Pending",stats.pending,'⏳','Needs attention','text-amber-500','animate-in-delay-1'),
+("Revenue","$~{:.0f}".format(stats.revenue),'💰',"+${:.0f} this month".format(stats.month_revenue),'text-green-500','animate-in-delay-2'),
+("Customers",stats.customers,'👥',"{}% conversion".format(stats.conversion_rate),'text-purple-500','animate-in-delay-3')
+] %}
+<div class="stat-card bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-5 {{ del }}">
 <div class="flex items-center justify-between mb-3">
-<div class="w-10 h-10 rounded-xl bg-gradient-to-br {{ color }} flex items-center justify-center shadow-lg"><span class="text-white text-lg">{% if loop.index==1 %}&#128197;{% elif loop.index==2 %}&#9203;{% elif loop.index==3 %}&#128176;{% else %}&#128101;{% endif %}</span></div>
+<div class="w-11 h-11 rounded-xl bg-gradient-to-br {% if loop.index==1 %}from-brand-500 to-blue-500{% elif loop.index==2 %}from-amber-500 to-orange-500{% elif loop.index==3 %}from-green-500 to-emerald-500{% else %}from-purple-500 to-pink-500{% endif %} flex items-center justify-center shadow-lg"><span class="text-white text-lg">{{ icon }}</span></div>
+<span class="text-[11px] font-semibold {{ trend_color }}">{{ trend }}</span>
 </div>
 <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-1">{{ label }}</p>
-<p class="text-3xl font-extrabold text-slate-900 dark:text-white">{{ value }}</p>
+<p class="text-3xl font-extrabold text-slate-900 dark:text-white count-up">{{ value }}</p>
 </div>
 {% endfor %}
 </div>
 
 <div class="grid lg:grid-cols-3 gap-5 mb-8">
-<div class="lg:col-span-2 bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
+<div class="lg:col-span-2 bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6 animate-in">
 <div class="flex items-center justify-between mb-6">
 <h3 class="font-bold text-slate-900 dark:text-white">Revenue Overview</h3>
-<span class="text-xs text-slate-500">Last 7 days</span>
+<span class="text-xs text-slate-500 bg-slate-100 dark:bg-white/5 px-3 py-1 rounded-full">Last 7 days</span>
 </div>
 <canvas id="revChart" height="100"></canvas>
 </div>
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6 animate-in-delay-1">
 <h3 class="font-bold mb-4 text-slate-900 dark:text-white">Appointment Status</h3>
-<canvas id="statusChart" height="180"></canvas>
-<div class="mt-4 space-y-2">
-<div class="flex items-center justify-between text-sm"><span class="text-slate-500">Pending</span><span class="font-semibold text-amber-500">{{ stats.pending }}</span></div>
-<div class="flex items-center justify-between text-sm"><span class="text-slate-500">Confirmed</span><span class="font-semibold text-green-500">{{ stats.confirmed }}</span></div>
-<div class="flex items-center justify-between text-sm"><span class="text-slate-500">Completed</span><span class="font-semibold text-brand-500">{{ stats.completed }}</span></div>
+<canvas id="statusChart" height="160"></canvas>
+<div class="mt-5 space-y-3">
+{% for label,count,color in [('Pending',stats.pending,'text-amber-500'),('Confirmed',stats.confirmed,'text-green-500'),('Completed',stats.completed,'text-brand-500'),('Cancelled',status_data[3] if status_data|length > 3 else 0,'text-red-500')] %}
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full {% if loop.index==1 %}bg-amber-500{% elif loop.index==2 %}bg-green-500{% elif loop.index==3 %}bg-brand-500{% else %}bg-red-500{% endif %}"></span><span class="text-slate-500">{{ label }}</span></div>
+<span class="font-bold {{ color }}">{{ count }}</span>
+</div>
+{% endfor %}
 </div>
 </div>
 </div>
 
-<div class="grid lg:grid-cols-2 gap-5">
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
+<div class="grid lg:grid-cols-2 gap-5 mb-8">
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6 animate-in">
 <div class="flex items-center justify-between mb-5">
 <h3 class="font-bold text-slate-900 dark:text-white">Upcoming Appointments</h3>
-<a href="/dashboard/appointments" class="text-xs font-semibold text-brand-500 hover:text-brand-600">View All</a>
+<a href="/dashboard/appointments" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition">View All →</a>
 </div>
 {% if upcoming %}
 <div class="space-y-3">
 {% for a in upcoming %}
-<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-white/[.03] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[.06] transition border border-slate-100 dark:border-white/[.03]">
+<div class="appt-row flex items-center justify-between p-4 bg-slate-50 dark:bg-white/[.03] rounded-xl border border-slate-100 dark:border-white/[.03]">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-xl bg-gradient-to-br {% if a.status=='pending' %}from-amber-400 to-orange-500{% else %}from-green-400 to-emerald-500{% endif %} flex items-center justify-center text-sm font-bold text-white">{{ a.cust_name[0] }}</div>
 <div>
@@ -97,17 +119,47 @@ body{transition:background-color .3s,color .3s}
 <div class="text-center py-10"><p class="text-sm text-slate-400">No upcoming appointments</p></div>
 {% endif %}
 </div>
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
+
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6 animate-in-delay-1">
+<div class="flex items-center justify-between mb-5">
+<h3 class="font-bold text-slate-900 dark:text-white">Top Services</h3>
+</div>
+{% if top_services %}
+<div class="space-y-3">
+{% for s in top_services %}
+<div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/[.03] rounded-xl border border-slate-100 dark:border-white/[.03]">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center">
+<span class="text-brand-500 text-sm font-bold">{{ loop.index }}</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-slate-900 dark:text-white">{{ s[0] }}</p>
+<p class="text-xs text-slate-500">{{ s[1] }} bookings</p>
+</div>
+</div>
+<span class="text-sm font-bold text-green-600 dark:text-green-400">${{ '%.0f'|format(s[2] or 0) }}</span>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<p class="text-sm text-slate-500 text-center py-8">No revenue data yet</p>
+{% endif %}
+</div>
+</div>
+
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6 animate-in">
 <div class="flex items-center justify-between mb-5">
 <h3 class="font-bold text-slate-900 dark:text-white">Recent Activity</h3>
 </div>
 {% if recent %}
 <div class="space-y-3">
 {% for a in recent %}
-<div class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-white/[.03] transition">
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-white/[.03] transition">
 <div class="w-2.5 h-2.5 rounded-full flex-shrink-0 {% if a.status=='completed' %}bg-green-500{% elif a.status=='pending' %}bg-amber-500{% elif a.status=='confirmed' %}bg-brand-500{% else %}bg-red-500{% endif %}"></div>
-<p class="text-sm flex-1 text-slate-700 dark:text-slate-300"><span class="font-medium text-slate-900 dark:text-white">{{ a.cust_name }}</span> {{ a.status }}</p>
-<span class="text-xs text-slate-400">{{ a.created_at.strftime('%H:%M') }}</span>
+<div class="flex-1 min-w-0">
+<p class="text-sm text-slate-700 dark:text-slate-300 truncate"><span class="font-medium text-slate-900 dark:text-white">{{ a.cust_name }}</span> booked <span class="font-medium">{{ a.service.name if a.service else 'a service' }}</span></p>
+</div>
+<span class="text-xs text-slate-400 whitespace-nowrap">{{ a.created_at.strftime('%b %d, %H:%M') }}</span>
 </div>
 {% endfor %}
 </div>
@@ -115,14 +167,18 @@ body{transition:background-color .3s,color .3s}
 <div class="text-center py-10"><p class="text-sm text-slate-400">No recent activity</p></div>
 {% endif %}
 </div>
-</div>
+
 </main>
 </div>
 
 <script>
-const labels=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d.toLocaleDateString('en',{weekday:'short'})});
-new Chart(document.getElementById('revChart'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:[1200,1900,800,1500,2200,1400,2450],borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,.1)',fill:true,tension:.4,borderWidth:2,pointRadius:4,pointBackgroundColor:'#6366f1',pointBorderColor:'#fff',pointBorderWidth:2}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#94a3b8',font:{size:11}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#94a3b8',font:{size:11},callback:v=>'$'+v}}}}});
-new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:['Pending','Confirmed','Completed'],datasets:[data:[{{ stats.pending }},{{ stats.confirmed }},{{ stats.completed }}],backgroundColor:['#f59e0b','#10b981','#6366f1'],borderWidth:0,borderRadius:4}]},options:{responsive:true,cutout:'70%',plugins:{legend:{display:false}}}});
+const labels={{ labels_7d | tojson }};
+const revData={{ revenue_7d | tojson }};
+const isDark=localStorage.getItem('theme')==='dark';
+const gridColor=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)';
+const tickColor=isDark?'#64748b':'#94a3b8';
+new Chart(document.getElementById('revChart'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:revData,borderColor:'#6366f1',backgroundColor:isDark?'rgba(99,102,241,.15)':'rgba(99,102,241,.08)',fill:true,tension:.4,borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#6366f1',pointBorderColor:isDark?'#111118':'#fff',pointBorderWidth:2,pointHoverRadius:7}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:isDark?'#1e1e2e':'#1e293b',titleColor:'#fff',bodyColor:'#cbd5e1',borderColor:'rgba(99,102,241,.3)',borderWidth:1,cornerRadius:12,padding:12,displayColors:false, callbacks:{label:ctx=>'$'+ctx.parsed.y}}},scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11,weight:500}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11},callback:v=>'$'+v}}}}});
+new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:['Pending','Confirmed','Completed','Cancelled'],datasets:[{data:{{ status_data | tojson }},backgroundColor:['#f59e0b','#10b981','#6366f1','#ef4444'],borderWidth:0,borderRadius:4,spacing:2}]},options:{responsive:true,cutout:'72%',plugins:{legend:{display:false}}}});
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('-translate-x-full')}
 function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}
 function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}

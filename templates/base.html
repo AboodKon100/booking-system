@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="{% block meta_desc %}Noomly - Smart Booking Platform{% endblock %}">
+<title>{% block title %}Noomly{% endblock %}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{brand:{50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'}}}}}</script>
+<style>
+*{font-family:'Inter',sans-serif}
+body{transition:background-color .3s,color .3s}
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.slide-in-left{opacity:0;transform:translateX(-30px);transition:opacity .5s ease,transform .5s ease}
+.slide-in-left.visible{opacity:1;transform:translateX(0)}
+.slide-in-right{opacity:0;transform:translateX(30px);transition:opacity .5s ease,transform .5s ease}
+.slide-in-right.visible{opacity:1;transform:translateX(0)}
+.scale-in{opacity:0;transform:scale(.9);transition:opacity .4s ease,transform .4s ease}
+.scale-in.visible{opacity:1;transform:scale(1)}
+@keyframes pulse-soft{0%,100%{opacity:1}50%{opacity:.7}}
+.pulse-soft{animation:pulse-soft 2s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.float{animation:float 3s ease-in-out infinite}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.skeleton{background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+.dark .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.05) 25%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.05) 75%);background-size:200% 100%}
+@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.count-up{animation:countUp .5s ease forwards}
+{% block extra_styles %}{% endblock %}
+</style>
+{% block head_extra %}{% endblock %}
+</head>
+<body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen">
+{% block body %}{% endblock %}
+<script>
+function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}
+function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function toggleSidebar(){const s=document.getElementById('sidebar');if(s){s.classList.toggle('-translate-x-full');s.classList.toggle('open')}}
+initTheme();
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.fade-in,.slide-in-left,.slide-in-right,.scale-in').forEach(el=>observer.observe(el));
+function animateCounters(){document.querySelectorAll('[data-count]').forEach(el=>{const target=parseInt(el.dataset.count);const prefix=el.dataset.prefix||'';const suffix=el.dataset.suffix||'';let current=0;const step=Math.max(1,Math.floor(target/40));const timer=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(timer)}el.textContent=prefix+current.toLocaleString()+suffix},20)})}
+document.addEventListener('DOMContentLoaded',animateCounters);
+function showToast(msg,type='success'){const t=document.createElement('div');t.className='fixed top-4 right-4 z-50 px-5 py-3 rounded-xl text-sm font-medium shadow-2xl transform translate-x-full transition-transform duration-300 '+(type==='error'?'bg-red-500 text-white':'bg-green-500 text-white');t.textContent=msg;document.body.appendChild(t);requestAnimationFrame(()=>t.classList.remove('translate-x-full'));setTimeout(()=>{t.classList.add('translate-x-full');setTimeout(()=>t.remove(),300)},3000)}
+</script>
+</body>
+</html>
