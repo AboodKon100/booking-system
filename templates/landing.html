@@ -12,11 +12,6 @@
 *{font-family:'Inter',sans-serif}
 body{transition:background-color .3s,color .3s}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes fadeInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
@@ -28,17 +23,14 @@ body{transition:background-color .3s,color .3s}
 .scale-in.visible{opacity:1;transform:scale(1)}
 .delay-1{transition-delay:.1s}.delay-2{transition-delay:.2s}.delay-3{transition-delay:.3s}.delay-4{transition-delay:.4s}
 .hero-gradient{background:linear-gradient(-45deg,#6366f1,#8b5cf6,#ec4899,#6366f1);background-size:400% 400%;animation:gradient-shift 8s ease infinite}
-.glass{background:rgba(255,255,255,.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1)}
 .feature-card{transition:all .4s cubic-bezier(.4,0,.2,1)}
 .feature-card:hover{transform:translateY(-8px);box-shadow:0 25px 50px -12px rgba(99,102,241,.2)}
-.dark .feature-card:hover{box-shadow:0 25px 50px -12px rgba(99,102,241,.1)}
 .pricing-card{transition:all .4s cubic-bezier(.4,0,.2,1)}
 .pricing-card:hover{transform:translateY(-8px)}
-.business-card{transition:all .3s cubic-bezier(.4,0,.2,1)}
-.business-card:hover{transform:translateY(-4px) scale(1.02)}
+.biz-card{transition:all .3s cubic-bezier(.4,0,.2,1)}
+.biz-card:hover{transform:translateY(-4px) scale(1.02)}
 .btn-primary{transition:all .3s cubic-bezier(.4,0,.2,1)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 20px 40px -8px rgba(99,102,241,.4)}
-.btn-primary:active{transform:translateY(0)}
 </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-[#0a0a0f] dark:text-slate-100">
@@ -53,15 +45,16 @@ body{transition:background-color .3s,color .3s}
 </a>
 <div class="hidden md:flex items-center gap-8">
 <a href="#features" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Features</a>
+<a href="/businesses" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Browse Businesses</a>
 <a href="#pricing" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Pricing</a>
-<a href="#businesses" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Businesses</a>
 </div>
 <div class="flex items-center gap-3">
 <button onclick="toggleTheme()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition" title="Toggle theme">
 <svg id="sun-icon" class="w-5 h-5 text-slate-600 dark:text-slate-400 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
 <svg id="moon-icon" class="w-5 h-5 text-slate-600 dark:text-slate-400 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
 </button>
-<a href="/login" class="text-sm font-medium px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition text-slate-700 dark:text-slate-300">Sign In</a>
+<a href="/login" class="text-sm font-medium px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition text-slate-700 dark:text-slate-300">Business Sign In</a>
+<a href="/customer/login" class="text-sm font-medium px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition text-slate-700 dark:text-slate-300">Customer Sign In</a>
 <a href="/register" class="btn-primary text-sm font-bold px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white shadow-lg shadow-brand-500/25">Get Started Free</a>
 </div>
 </div>
@@ -85,7 +78,7 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </p>
 <div class="flex flex-col sm:flex-row gap-4 mb-10 fade-in delay-3">
 <a href="/register" class="btn-primary px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-base text-center shadow-xl shadow-brand-500/30">Start Free Trial</a>
-<a href="#features" class="px-8 py-4 rounded-2xl border-2 border-slate-200 dark:border-white/10 font-semibold text-base hover:bg-slate-50 dark:hover:bg-white/5 transition text-center">See Features</a>
+<a href="/businesses" class="px-8 py-4 rounded-2xl border-2 border-slate-200 dark:border-white/10 font-semibold text-base hover:bg-slate-50 dark:hover:bg-white/5 transition text-center">Browse Businesses</a>
 </div>
 <div class="flex items-center gap-6 fade-in delay-4">
 <div class="flex -space-x-3">
@@ -167,7 +160,7 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 <div class="grid md:grid-cols-4 gap-6 text-center">
 {% for value,label,sub in [('500+','Businesses','Active on Noomly'),('2,000+','Bookings','Made this month'),('92%','Confirm Rate','AI verification'),('4.9/5','Rating','Customer satisfaction')] %}
 <div class="fade-in {% if loop.index==1 %}delay-1{% elif loop.index==2 %}delay-2{% elif loop.index==3 %}delay-3{% else %}delay-4{% endif %}">
-<p class="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent" data-count="{{ value.replace('+','').replace('/','') }}" data-suffix="{{ '+' if '+' in value else '' }}">{{ value }}</p>
+<p class="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">{{ value }}</p>
 <p class="text-lg font-bold text-slate-900 dark:text-white mt-2">{{ label }}</p>
 <p class="text-sm text-slate-500">{{ sub }}</p>
 </div>
@@ -176,22 +169,50 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </section>
 
-<section id="businesses" class="py-28 border-y border-slate-200 dark:border-white/5">
+<section class="py-28 border-y border-slate-200 dark:border-white/5">
 <div class="max-w-7xl mx-auto px-6">
 <div class="text-center mb-16 fade-in">
-<span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">For Every Business</span>
-<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Built for <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">your industry</span></h2>
-<p class="text-lg text-slate-600 dark:text-slate-400">Tailored features for every type of service business.</p>
+<span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">Browse Businesses</span>
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Find a business <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">near you</span></h2>
+<p class="text-lg text-slate-600 dark:text-slate-400">Search by name, type, or city — then book directly.</p>
 </div>
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-{% for key, bt in BUSINESS_TYPES.items() %}
-<a href="/register" class="business-card group bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-brand-300 dark:hover:border-brand-500/30 text-center fade-in delay-{{ loop.index0 % 4 + 1 }}">
-<div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-brand-100 dark:group-hover:bg-brand-500/20 transition">
-<span class="text-2xl">{{ bt.icon | safe }}</span>
+{% if businesses %}
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+{% for b in businesses[:6] %}
+{% set btype = BUSINESS_TYPES.get(b.business_type, BUSINESS_TYPES.other) %}
+<a href="/book/{{ b.slug }}" class="biz-card bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden fade-in delay-{{ loop.index0 % 4 + 1 }}">
+{% if b.cover %}
+<div class="h-32 bg-cover bg-center" style="background-image:url('/static/uploads/{{ b.cover }}')"></div>
+{% else %}
+<div class="h-32 bg-gradient-to-br {{ btype.color }} flex items-center justify-center">
+<span class="text-4xl">{{ btype.icon }}</span>
 </div>
-<p class="font-bold text-sm text-slate-900 dark:text-white group-hover:text-brand-500 transition">{{ bt.name }}</p>
+{% endif %}
+<div class="p-4">
+<div class="flex items-center gap-3 mb-2">
+{% if b.logo %}
+<img src="/static/uploads/{{ b.logo }}" class="w-10 h-10 rounded-lg object-cover border-2 border-white dark:border-[#111118] shadow -mt-8 relative z-10">
+{% else %}
+<div class="w-10 h-10 rounded-lg bg-white dark:bg-[#111118] border-2 border-white dark:border-[#111118] shadow flex items-center justify-center -mt-8 relative z-10">
+<span class="text-lg">{{ btype.icon }}</span>
+</div>
+{% endif %}
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ b.name }}</h3>
+<p class="text-xs text-slate-500">{{ btype.name }}</p>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2">
+{% if b.city %}<span class="text-xs text-slate-500">📍 {{ b.city }}</span>{% endif %}
+<span class="text-xs font-semibold text-brand-500">Book →</span>
+</div>
+</div>
 </a>
 {% endfor %}
+</div>
+{% endif %}
+<div class="text-center">
+<a href="/businesses" class="btn-primary inline-block px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm shadow-lg shadow-brand-500/25">View All Businesses →</a>
 </div>
 </div>
 </section>
@@ -247,9 +268,10 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 <div class="flex gap-6">
 <a href="#features" class="text-sm text-slate-500 hover:text-brand-500 transition">Features</a>
+<a href="/businesses" class="text-sm text-slate-500 hover:text-brand-500 transition">Browse Businesses</a>
 <a href="#pricing" class="text-sm text-slate-500 hover:text-brand-500 transition">Pricing</a>
-<a href="/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Business Login</a>
-<a href="/customer/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Customer Login</a>
+<a href="/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Business Sign In</a>
+<a href="/customer/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Customer Sign In</a>
 </div>
 </div>
 <div class="border-t border-slate-200 dark:border-white/5 mt-8 pt-8 text-center text-sm text-slate-500">&copy; 2026 Noomly. All rights reserved.</div>
