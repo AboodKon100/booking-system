@@ -8,6 +8,13 @@ from datetime import datetime, date, timedelta, timedelta as td
 from sqlalchemy import func, and_, extract, or_
 import uuid, random, string, os, re, calendar as cal_mod, threading
 
+try:
+    from twilio.rest import Client as TwilioClient
+    from twilio.base.exceptions import TwilioRestException
+    TWILIO_ENABLED = True
+except ImportError:
+    TWILIO_ENABLED = False
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'noomly-prod-key-2026-change')
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'noomly.db')
@@ -106,6 +113,48 @@ def can_add_booking(business):
     month_start = date.today().replace(day=1)
     count = Appointment.query.filter(and_(Appointment.business_id==business.id, Appointment.created_at >= month_start)).count()
     return count < limits['max_bookings_month']
+
+# ─── TWILIO AI CALLING ────────────────────────────────────────
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
+TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER', '')
+NOOMLY_PHONE_NUMBER = os.environ.get('NOOMLY_PHONE_NUMBER', '')
+
+def get_twilio_client():
+    if TWILIO_ENABLED and TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
+        return TwilioClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    return None
+
+def make_ai_call(to_number, message, callback_url=None):
+    client = get_twilio_client()
+    if not client or not TWILIO_PHONE_NUMBER:
+        print(f'[DEMO CALL] To: {to_number} | Message: {message}')
+        return False
+    try:
+        twiml = f'<Response><Say voice="Polly.Matthew" language="en-US">{message}</Say></Response>'
+        call = client.calls.create(
+            to=to_number,
+            from_=TWILIO_PHONE_NUMBER,
+            twiml=twiml,
+            status_callback=callback_url,
+            status_callback_event=['initiated', 'ringing', 'answered', 'completed']
+        )
+        return True
+    except TwilioRestException as e:
+        print(f'Twilio call failed: {e}')
+        return False
+
+def call_customer_for_confirmation(appointment, business):
+    msg = f"Hello {appointment.cust_name}, this is an automated call from {business.name}. Your appointment for {appointment.service.name if appointment.service else 'your service'} is confirmed for {appointment.date.strftime('%B %d')} at {appointment.time}. Your confirmation code is {appointment.confirmation_code}. Thank you!"
+    if appointment.cust_phone:
+        return make_ai_call(appointment.cust_phone, msg)
+    return False
+
+def call_customer_for_postpone(appointment, business):
+    msg = f"Hello {appointment.cust_name}, this is {business.name}. Your appointment has been rescheduled to {appointment.date.strftime('%B %d')} at {appointment.time} for {appointment.service.name if appointment.service else 'your service'}. Your confirmation code is {appointment.confirmation_code}. If this doesn't work, please call us to reschedule. Thank you!"
+    if appointment.cust_phone:
+        return make_ai_call(appointment.cust_phone, msg)
+    return False
 
 def gen_id():
     return str(uuid.uuid4())
@@ -452,6 +501,17 @@ def update_hours():
     flash('Hours updated!', 'success')
     return redirect(url_for('settings'))
 
+@app.route('/dashboard/upgrade/<plan>', methods=['POST'])
+@login_required
+def upgrade_plan(plan):
+    if plan not in ['professional', 'business']:
+        flash('Invalid plan.', 'error')
+        return redirect(url_for('settings'))
+    current_user.plan = plan
+    db.session.commit()
+    flash(f'Upgraded to {plan.title()} plan! All features unlocked.', 'success')
+    return redirect(url_for('settings'))
+
 @app.route('/dashboard/reports')
 @login_required
 def reports():
@@ -510,6 +570,9 @@ def ai_agent():
 @login_required
 def simulate_call(aid):
     a = Appointment.query.filter_by(id=aid, business_id=current_user.id).first_or_404()
+    a.ai_call_status = 'calling'
+    db.session.commit()
+    called = call_customer_for_confirmation(a, current_user)
     a.ai_call_status = 'completed'
     a.ai_verified = True
     a.status = 'confirmed'
@@ -518,10 +581,12 @@ def simulate_call(aid):
     a.email_sent_at = datetime.utcnow()
     db.session.commit()
     sent = send_ai_confirmation(a, current_user)
-    if sent:
-        flash(f'AI confirmed appointment with {a.cust_name}. Email sent. Code: {a.confirmation_code}', 'success')
+    if called:
+        flash(f'AI called {a.cust_name} at {a.cust_phone}. Confirmed. Code: {a.confirmation_code}', 'success')
+    elif sent:
+        flash(f'AI confirmed {a.cust_name}. Email sent. Code: {a.confirmation_code}', 'success')
     else:
-        flash(f'AI confirmed {a.cust_name}. (Demo mode - configure SMTP for real emails). Code: {a.confirmation_code}', 'info')
+        flash(f'AI confirmed {a.cust_name}. (Configure TWILIO_* env vars for real calls, SMTP for emails). Code: {a.confirmation_code}', 'info')
     return redirect(url_for('ai_agent'))
 
 @app.route('/dashboard/appointments/<aid>/postpone', methods=['POST'])
@@ -535,8 +600,12 @@ def postpone_appointment(aid):
         a.time = new_time
         a.status = 'postponed'
         db.session.commit()
+        called = call_customer_for_postpone(a, current_user)
         send_postpone_notification(a, current_user)
-        flash(f'Appointment with {a.cust_name} has been postponed to {a.date.strftime("%b %d")} at {a.time}. AI agent will call to notify.', 'success')
+        if called:
+            flash(f'Postponed {a.cust_name} to {a.date.strftime("%b %d")} {a.time}. AI called to notify.', 'success')
+        else:
+            flash(f'Postponed {a.cust_name} to {a.date.strftime("%b %d")} {a.time}. (Configure TWILIO_* for real calls).', 'info')
     else:
         flash('Please provide new date and time.', 'error')
     return redirect(url_for('all_appointments'))

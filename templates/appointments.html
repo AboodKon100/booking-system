@@ -55,11 +55,7 @@
 {% endif %}
 {% if a.status in ['pending','confirmed'] %}
 <form method="POST" action="/dashboard/appointments/{{ a.id }}/status"><input type="hidden" name="status" value="completed"><button class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold hover:bg-brand-100 dark:hover:bg-brand-500/20 transition border border-brand-200 dark:border-brand-500/20">Done</button></form>
-<form method="POST" action="/dashboard/appointments/{{ a.id }}/postpone" class="inline-flex" onsubmit="return confirm('Postpone this appointment? AI agent will call to notify customer.')">
-<input type="hidden" name="new_date" value="">
-<input type="hidden" name="new_time" value="">
-<button type="button" onclick="showPostponeModal('{{ a.id }}', '{{ a.date }}', '{{ a.time }}')" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-500/20 transition border border-amber-200 dark:border-amber-500/20">Postpone</button>
-</form>
+<button type="button" onclick="openPostpone('{{ a.id }}','{{ a.date.isoformat() }}','{{ a.time }}')" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-500/20 transition border border-amber-200 dark:border-amber-500/20">Postpone</button>
 <form method="POST" action="/dashboard/appointments/{{ a.id }}/status"><input type="hidden" name="status" value="cancelled"><button class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-semibold hover:bg-red-100 dark:hover:bg-red-500/20 transition border border-red-200 dark:border-red-500/20">Cancel</button></form>
 {% endif %}
 </div>
@@ -78,6 +74,55 @@
 {% endif %}
 </main>
 </div>
+
+<div id="postponeModal" class="fixed inset-0 z-[60] hidden">
+<div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closePostpone()"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-[#14141f] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-6">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Postpone Appointment</h3>
+<p class="text-sm text-slate-500 mb-5">Select new date and time. AI agent will call the customer.</p>
+<form id="postponeForm" method="POST">
+<input type="hidden" name="new_date" id="postponeDate">
+<input type="hidden" name="new_time" id="postponeTime">
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-semibold text-slate-500 mb-1.5">New Date</label>
+<input type="date" id="postponeDatePicker" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[.04] border border-slate-200 dark:border-white/10 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500" required>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-500 mb-1.5">New Time</label>
+<input type="time" id="postponeTimePicker" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[.04] border border-slate-200 dark:border-white/10 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500" required>
+</div>
+</div>
+<div class="flex gap-3 mt-6">
+<button type="button" onclick="closePostpone()" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/[.04] transition">Cancel</button>
+<button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 transition shadow-lg shadow-amber-500/20">Postpone & Call</button>
+</div>
+</div>
+</div>
+
 <script src="/static/js/dashboard.js"></script>
+<script>
+function openPostpone(id, currentDate, currentTime) {
+    document.getElementById('postponeForm').action = '/dashboard/appointments/' + id + '/postpone';
+    document.getElementById('postponeDatePicker').value = currentDate;
+    document.getElementById('postponeTimePicker').value = currentTime || '09:00';
+    document.getElementById('postponeModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closePostpone() {
+    document.getElementById('postponeModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+document.getElementById('postponeForm').addEventListener('submit', function(e) {
+    document.getElementById('postponeDate').value = document.getElementById('postponeDatePicker').value;
+    document.getElementById('postponeTime').value = document.getElementById('postponeTimePicker').value;
+    if (!document.getElementById('postponeDate').value || !document.getElementById('postponeTime').value) {
+        e.preventDefault();
+        alert('Please select both date and time.');
+        return false;
+    }
+    return confirm('Postpone this appointment? AI agent will call the customer to notify them.');
+});
+</script>
 </body>
 </html>
