@@ -15,8 +15,8 @@
 <div class="w-full max-w-lg">
 <div class="text-center mb-8">
 <a href="/" class="inline-flex items-center gap-2.5 mb-6">
-<img src="/static/logo.svg" alt="Noomly" class="w-10 h-10">
-<span class="text-xl font-extrabold">Noomly</span>
+<img src="/static/logo.svg" alt="Noomly" class="h-10 w-auto dark:hidden">
+<img src="/static/logo-dark.svg" alt="Noomly" class="h-10 w-auto hidden dark:block">
 </a>
 <h1 class="text-3xl font-extrabold mb-2">{% if step==1 %}What's your business?{% else %}Create your account{% endif %}</h1>
 <p class="text-slate-500 dark:text-slate-400">{% if step==1 %}Select your business type to get tailored features{% else %}Start your free trial — no credit card required{% endif %}</p>
