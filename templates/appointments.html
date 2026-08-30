@@ -14,6 +14,7 @@
 .s-confirmed{background:#d1fae5;color:#059669;border:1px solid #a7f3d0}.dark .s-confirmed{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.2)}
 .s-completed{background:#e0e7ff;color:#4f46e5;border:1px solid #c7d2fe}.dark .s-completed{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.2)}
 .s-cancelled{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}.dark .s-cancelled{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.2)}
+.s-postponed{background:#fef3c7;color:#d97706;border:1px solid #fde68a}.dark .s-postponed{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.2)}
 </style>
 </head>
 <body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen flex">
@@ -23,7 +24,7 @@
 <main class="p-4 sm:p-6 lg:p-8">
 {{ flash_messages() }}
 <div class="flex flex-wrap gap-2 mb-5 sm:mb-6">
-{% for s in [('all','All'),('pending','Pending'),('confirmed','Confirmed'),('completed','Completed'),('cancelled','Cancelled')] %}
+{% for s in [('all','All'),('pending','Pending'),('confirmed','Confirmed'),('completed','Completed'),('postponed','Postponed'),('cancelled','Cancelled')] %}
 <a href="/dashboard/appointments?status={{ s[0] }}" class="text-xs font-semibold px-3 sm:px-4 py-2 rounded-lg transition {% if current_status==s[0] %}bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-500/20{% else %}text-slate-500 border border-slate-200 dark:border-white/5 hover:bg-slate-100 dark:hover:bg-white/5{% endif %}">{{ s[1] }}</a>
 {% endfor %}
 </div>
@@ -54,6 +55,11 @@
 {% endif %}
 {% if a.status in ['pending','confirmed'] %}
 <form method="POST" action="/dashboard/appointments/{{ a.id }}/status"><input type="hidden" name="status" value="completed"><button class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold hover:bg-brand-100 dark:hover:bg-brand-500/20 transition border border-brand-200 dark:border-brand-500/20">Done</button></form>
+<form method="POST" action="/dashboard/appointments/{{ a.id }}/postpone" class="inline-flex" onsubmit="return confirm('Postpone this appointment? AI agent will call to notify customer.')">
+<input type="hidden" name="new_date" value="">
+<input type="hidden" name="new_time" value="">
+<button type="button" onclick="showPostponeModal('{{ a.id }}', '{{ a.date }}', '{{ a.time }}')" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-500/20 transition border border-amber-200 dark:border-amber-500/20">Postpone</button>
+</form>
 <form method="POST" action="/dashboard/appointments/{{ a.id }}/status"><input type="hidden" name="status" value="cancelled"><button class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-semibold hover:bg-red-100 dark:hover:bg-red-500/20 transition border border-red-200 dark:border-red-500/20">Cancel</button></form>
 {% endif %}
 </div>
@@ -64,7 +70,7 @@
 </div>
 </div>
 {% else %}
-<div class="text-center py-16 sm:py-20">
+<div class="text-center py-10 sm:py-12">
 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-100 dark:bg-white/[.03] flex items-center justify-center mx-auto mb-4 sm:mb-5"><svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
 <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">No appointments yet</h3>
 <p class="text-sm text-slate-500">Share your booking page to start receiving appointments</p>

@@ -65,6 +65,12 @@ def send_ai_confirmation(appointment, business):
                           business=business, appointment=appointment, service_name=svc_name)
     send_email(f'Appointment Confirmed by AI - {business.name}', appointment.cust_email, html)
 
+def send_postpone_notification(appointment, business):
+    svc_name = appointment.service.name if appointment.service else 'service'
+    html = render_template('email/postpone_notification.html',
+                          business=business, appointment=appointment, service_name=svc_name)
+    send_email(f'Appointment Postponed - {business.name}', appointment.cust_email, html)
+
 BUSINESS_TYPES = {
     'salon': {'name': 'Salon & Beauty', 'icon': '✂️', 'color': 'from-pink-500 to-rose-500', 'features': ['Hair Styling', 'Coloring', 'Manicure', 'Pedicure'], 'default_services': [('Haircut & Styling', 45, 45), ('Hair Coloring', 120, 120), ('Manicure', 30, 30), ('Pedicure', 45, 45), ('Facial Treatment', 60, 65)]},
     'barbershop': {'name': 'Barbershop', 'icon': '💈', 'color': 'from-blue-500 to-indigo-500', 'features': ['Haircut', 'Beard Trim', 'Hot Shave', 'Kids Cut'], 'default_services': [('Classic Haircut', 30, 35), ('Beard Trim', 20, 20), ('Hot Towel Shave', 25, 30), ('Kids Haircut', 20, 20), ('Combo', 45, 50)]},
@@ -81,6 +87,25 @@ BUSINESS_TYPES = {
     'auto': {'name': 'Auto Services', 'icon': '🔧', 'color': 'from-gray-600 to-gray-800', 'features': ['Oil Change', 'Tire Service', 'Detailing', 'Repair'], 'default_services': [('Oil Change', 30, 45), ('Tire Rotation', 30, 25), ('Full Detail', 180, 150), ('Brake Check', 45, 75)]},
     'other': {'name': 'Other Business', 'icon': '⚙️', 'color': 'from-brand-500 to-purple-500', 'features': ['Custom Service'], 'default_services': [('Consultation', 30, 0), ('Standard Service', 60, 50), ('Premium Service', 90, 100)]},
 }
+
+PLAN_LIMITS = {
+    'free': {'max_services': 1, 'max_bookings_month': 10, 'ai_agent': False, 'payments': False, 'analytics': False, 'sms': False, 'custom_branding': False, 'multi_staff': False, 'api_access': False},
+    'professional': {'max_services': -1, 'max_bookings_month': -1, 'ai_agent': True, 'payments': True, 'analytics': True, 'sms': True, 'custom_branding': True, 'multi_staff': False, 'api_access': False},
+    'business': {'max_services': -1, 'max_bookings_month': -1, 'ai_agent': True, 'payments': True, 'analytics': True, 'sms': True, 'custom_branding': True, 'multi_staff': True, 'api_access': True},
+}
+
+def can_add_service(business):
+    limits = PLAN_LIMITS.get(business.plan, PLAN_LIMITS['free'])
+    if limits['max_services'] == -1: return True
+    count = Service.query.filter_by(business_id=business.id).count()
+    return count < limits['max_services']
+
+def can_add_booking(business):
+    limits = PLAN_LIMITS.get(business.plan, PLAN_LIMITS['free'])
+    if limits['max_bookings_month'] == -1: return True
+    month_start = date.today().replace(day=1)
+    count = Appointment.query.filter(and_(Appointment.business_id==business.id, Appointment.created_at >= month_start)).count()
+    return count < limits['max_bookings_month']
 
 def gen_id():
     return str(uuid.uuid4())
@@ -110,7 +135,7 @@ class Business(UserMixin, db.Model):
     slug = db.Column(db.String(50), unique=True, nullable=False)
     description = db.Column(db.Text)
     business_type = db.Column(db.String(30), default='other')
-    plan = db.Column(db.String(20), default='professional')
+    plan = db.Column(db.String(20), default='free')
     logo = db.Column(db.String(200))
     cover = db.Column(db.String(200))
     address = db.Column(db.String(300))
@@ -340,6 +365,9 @@ def services_list():
 @login_required
 def create_service():
     if request.method == 'POST':
+        if not can_add_service(current_user):
+            flash('Free plan limited to 1 service. Upgrade to add more.', 'error')
+            return redirect(url_for('services_list'))
         s = Service(business_id=current_user.id, name=request.form['name'],
                     description=request.form.get('description',''), duration=int(request.form.get('duration',30)),
                     price=float(request.form.get('price',0)), color=request.form.get('color','#6366f1'))
@@ -496,6 +524,23 @@ def simulate_call(aid):
         flash(f'AI confirmed {a.cust_name}. (Demo mode - configure SMTP for real emails). Code: {a.confirmation_code}', 'info')
     return redirect(url_for('ai_agent'))
 
+@app.route('/dashboard/appointments/<aid>/postpone', methods=['POST'])
+@login_required
+def postpone_appointment(aid):
+    a = Appointment.query.filter_by(id=aid, business_id=current_user.id).first_or_404()
+    new_date = request.form.get('new_date')
+    new_time = request.form.get('new_time')
+    if new_date and new_time:
+        a.date = datetime.strptime(new_date, '%Y-%m-%d').date()
+        a.time = new_time
+        a.status = 'postponed'
+        db.session.commit()
+        send_postpone_notification(a, current_user)
+        flash(f'Appointment with {a.cust_name} has been postponed to {a.date.strftime("%b %d")} at {a.time}. AI agent will call to notify.', 'success')
+    else:
+        flash('Please provide new date and time.', 'error')
+    return redirect(url_for('all_appointments'))
+
 @app.route('/dashboard/ai-agent/<aid>/email', methods=['POST'])
 @login_required
 def send_agent_email(aid):
@@ -530,6 +575,9 @@ def book_page(slug):
 @app.route('/book/<slug>/confirm', methods=['POST'])
 def book_confirm(slug):
     b = Business.query.filter_by(slug=slug).first_or_404()
+    if not can_add_booking(b):
+        flash('This business has reached their monthly booking limit.', 'error')
+        return redirect(url_for('book_page', slug=slug))
     svc_id = request.form.get('service_id')
     if not svc_id:
         flash('Please select a service.', 'error')
@@ -604,6 +652,45 @@ def api_slots(slug, date_str):
         if ts not in booked_times: slots.append(ts)
         cur += td(minutes=30)
     return jsonify(slots)
+
+@app.route('/api/ai-answer', methods=['POST'])
+def ai_answer_call():
+    data = request.get_json() or {}
+    caller_phone = data.get('phone', '')
+    business_slug = data.get('business_slug', '')
+    reason = data.get('reason', 'general')
+    
+    b = Business.query.filter_by(slug=business_slug).first()
+    if not b:
+        return jsonify({'error': 'Business not found'}), 404
+    
+    customer_name = data.get('name', 'Customer')
+    
+    response = {
+        'greeting': f'Thank you for calling {b.name}! I\'m Noomly AI assistant.',
+        'options': [
+            {'id': 'appointment', 'text': 'I want to know about my upcoming appointment'},
+            {'id': 'reschedule', 'text': 'I want to reschedule my appointment'},
+            {'id': 'cancel', 'text': 'I want to cancel my appointment'},
+            {'id': 'employee', 'text': 'I want to speak with an employee'},
+            {'id': 'hours', 'text': 'What are your business hours?'},
+            {'id': 'other', 'text': 'I have a different question'}
+        ],
+        'message': f'Hello {customer_name}, how can I help you today?'
+    }
+    
+    if reason == 'appointment':
+        appt = Appointment.query.filter(and_(
+            Appointment.cust_phone == caller_phone,
+            Appointment.business_id == b.id,
+            Appointment.status.in_(['pending', 'confirmed'])
+        )).order_by(Appointment.date.desc()).first()
+        if appt:
+            response['message'] = f'Your next appointment is on {appt.date.strftime("%B %d, %Y")} at {appt.time} for {appt.service.name if appt.service else "your service"}. Your confirmation code is {appt.confirmation_code}.'
+        else:
+            response['message'] = 'I don\'t see any upcoming appointments under that phone number. Would you like to book a new appointment?'
+    
+    return jsonify(response)
 
 @app.route('/api/calendar/events')
 @login_required

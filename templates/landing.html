@@ -42,7 +42,9 @@ body{transition:background-color .3s,color .3s}
 <span class="text-xl font-extrabold tracking-tight">Noomly</span>
 </a>
 <div class="hidden md:flex items-center gap-8">
+<a href="#about" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">About</a>
 <a href="#features" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Features</a>
+<a href="#services" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Services</a>
 <a href="/businesses" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Browse Businesses</a>
 <a href="#pricing" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-500 transition">Pricing</a>
 </div>
@@ -58,6 +60,7 @@ body{transition:background-color .3s,color .3s}
 </div>
 </nav>
 
+<!-- HERO -->
 <section class="min-h-screen relative flex items-center pt-16 overflow-hidden">
 <div class="absolute top-20 right-0 w-[600px] h-[600px] bg-brand-500/10 rounded-full blur-[120px]"></div>
 <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]"></div>
@@ -67,11 +70,11 @@ body{transition:background-color .3s,color .3s}
 <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
 <span class="text-sm font-medium text-brand-700 dark:text-brand-300">Now in Beta — 500+ businesses</span>
 </div>
-<h1 class="text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6 fade-in delay-1">
+<h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6 fade-in delay-1">
 Your Business,<br>
 <span class="hero-gradient bg-clip-text text-transparent">Always Open.</span>
 </h1>
-<p class="text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed mb-8 fade-in delay-2">
+<p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed mb-8 fade-in delay-2">
 Let customers book 24/7. AI verification, automatic invoicing, secure payments. The smart booking platform that grows with you.
 </p>
 <div class="flex flex-col sm:flex-row gap-4 mb-10 fade-in delay-3">
@@ -125,7 +128,47 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </section>
 
-<section id="features" class="py-28 bg-slate-50/50 dark:bg-white/[.01] border-y border-slate-200 dark:border-white/5">
+<!-- ABOUT US -->
+<section id="about" class="py-24 bg-slate-50/50 dark:bg-white/[.01] border-y border-slate-200 dark:border-white/5">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="fade-in">
+<span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">About Us</span>
+<h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">We're on a mission to <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">digitize service businesses</span></h2>
+<p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6">Noomly was built for service businesses in Saudi Arabia and beyond. We understand the challenges: missed appointments, phone tag, manual scheduling, and lost revenue.</p>
+<p class="text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-8">Our AI-powered platform handles bookings, confirmations, payments, and customer communication — so you can focus on delivering great service.</p>
+<div class="grid grid-cols-2 gap-4">
+{% for val,label in [('98%','Uptime'),('24/7','Availability'),('< 2s','Response Time'),('SOC2','Compliant')] %}
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-xl p-4 text-center">
+<p class="text-2xl font-extrabold text-brand-600 dark:text-brand-400">{{ val }}</p>
+<p class="text-xs text-slate-500 mt-1">{{ label }}</p>
+</div>
+{% endfor %}
+</div>
+</div>
+<div class="slide-right">
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-3xl p-8 shadow-xl">
+<h3 class="text-xl font-bold mb-6 text-slate-900 dark:text-white">Our Values</h3>
+<div class="space-y-5">
+{% for icon,title,desc in [
+('🎯','Customer First','Every feature we build starts with the question: how does this help our users grow?'),
+('🤖','AI-Powered','We use artificial intelligence to automate confirmations, reduce no-shows, and save you time.'),
+('🌍','Global Reach','Built in Saudi Arabia, designed for businesses worldwide. We speak your language.'),
+('🔒','Trust & Security','Your data is encrypted, your payments are secure, and we never sell your information.')] %}
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center flex-shrink-0 text-lg">{{ icon }}</div>
+<div><h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ title }}</h4><p class="text-sm text-slate-500 mt-1">{{ desc }}</p></div>
+</div>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="py-28">
 <div class="max-w-7xl mx-auto px-6">
 <div class="text-center mb-16 fade-in">
 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">Features</span>
@@ -134,12 +177,13 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
 {% for icon, title, desc, grad, delay in [
-('M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z','24/7 Online Booking','Customers book anytime, from any device. No more phone calls.','from-brand-500 to-blue-500','delay-1'),
-('M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z','AI Confirmation Calls','Our AI calls customers to confirm. Reduces no-shows by 80%.','from-purple-500 to-pink-500','delay-2'),
-('M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z','Auto Invoicing','Professional invoices generated and emailed automatically.','from-emerald-500 to-green-500','delay-3'),
-('M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z','Secure Payments','Accept deposits and full payments online. Stripe-powered.','from-amber-500 to-orange-500','delay-4'),
-('M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z','Analytics Dashboard','Track revenue, appointments, and customer insights with charts.','from-pink-500 to-rose-500','delay-1'),
-('M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z','Mobile First','Fully responsive. Customers book from any device.','from-cyan-500 to-blue-500','delay-2')
+('M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z','24/7 Online Booking','Customers book anytime, from any device. No more phone calls. Available around the clock.','from-brand-500 to-blue-500','delay-1'),
+('M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z','AI Confirmation Calls','Our AI calls customers to confirm appointments. Reduces no-shows by 80%.','from-purple-500 to-pink-500','delay-2'),
+('M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z','Auto Invoicing','Professional invoices generated and emailed automatically after each appointment.','from-emerald-500 to-green-500','delay-3'),
+('M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z','Secure Payments','Accept deposits and full payments online. Stripe-powered. Automatic refunds on cancellation.','from-amber-500 to-orange-500','delay-4'),
+('M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z','Analytics Dashboard','Track revenue, appointments, and customer insights with beautiful charts.','from-pink-500 to-rose-500','delay-1'),
+('M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z','AI Call Center','Customers can call your business and our AI answers — checks appointments, connects to staff, answers FAQs.','from-indigo-500 to-violet-500','delay-2'),
+('M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z','Smart Postponing','Businesses can reschedule appointments. AI agent automatically calls customers to notify them.','from-orange-500 to-amber-500','delay-3')
 ] %}
 <div class="feature-card bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-7 fade-in {{ delay }}">
 <div class="w-12 h-12 rounded-xl bg-gradient-to-br {{ grad }} flex items-center justify-center mb-5 shadow-lg">
@@ -153,6 +197,36 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </section>
 
+<!-- BUSINESS TYPES / SERVICES -->
+<section id="services" class="py-28 bg-slate-50/50 dark:bg-white/[.01] border-y border-slate-200 dark:border-white/5">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-16 fade-in">
+<span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">Business Types</span>
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Built for <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">every service business</span></h2>
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Whether you run a salon, clinic, or consulting firm — Noomly adapts to your business.</p>
+</div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+{% for btype_key, btype in BUSINESS_TYPES.items() %}
+{% if btype_key != 'other' %}
+<div class="feature-card bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6 text-center fade-in delay-{{ loop.index0 % 4 + 1 }}">
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-br {{ btype.color }} flex items-center justify-center mx-auto mb-4 shadow-lg text-2xl">{{ btype.icon }}</div>
+<h3 class="font-bold text-sm text-slate-900 dark:text-white mb-2">{{ btype.name }}</h3>
+<div class="flex flex-wrap justify-center gap-1.5">
+{% for feat in btype.features[:3] %}
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-500">{{ feat }}</span>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+<div class="text-center mt-8 fade-in">
+<a href="/businesses" class="btn-primary inline-block px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm shadow-lg shadow-brand-500/25">Browse All Businesses →</a>
+</div>
+</div>
+</section>
+
+<!-- STATS -->
 <section class="py-20">
 <div class="max-w-7xl mx-auto px-6">
 <div class="grid md:grid-cols-4 gap-6 text-center">
@@ -167,6 +241,57 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </section>
 
+<!-- HOW IT WORKS FOR CUSTOMERS -->
+<section class="py-28 border-y border-slate-200 dark:border-white/5">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-16 fade-in">
+<span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">For Customers</span>
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Booking made <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">simple</span></h2>
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Here's how customers experience Noomly.</p>
+</div>
+<div class="grid md:grid-cols-4 gap-6">
+{% for step,num,title,desc in [
+('1️⃣','1','Browse & Choose','Find a business, pick a service, and select a date and time that works for you.'),
+('2️⃣','2','Secure Payment','Pay securely online with your card. Your payment is held in escrow until the appointment.'),
+('3️⃣','3','AI Confirmation','Our AI calls you to confirm the appointment. Get a confirmation code and email receipt.'),
+('4️⃣','4','Show Up & Enjoy','Arrive at your appointment. If anything changes, reschedule or cancel with a full refund.')] %}
+<div class="text-center fade-in delay-{{ loop.index }}">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center mx-auto mb-5 shadow-xl shadow-brand-500/20 text-2xl">{{ step }}</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">{{ title }}</h3>
+<p class="text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">{{ desc }}</p>
+</div>
+{% endfor %}
+</div>
+</div>
+</section>
+
+<!-- HOW IT WORKS FOR BUSINESSES -->
+<section class="py-28 bg-slate-50/50 dark:bg-white/[.01]">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-16 fade-in">
+<span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">For Businesses</span>
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">Grow with <span class="bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">smart automation</span></h2>
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Set up in minutes. Let AI handle the rest.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+{% for icon,title,desc,grad in [
+('M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4','Set Up in Minutes','Create your account, add services, set your hours. Your booking page is live instantly.','from-brand-500 to-blue-500'),
+('M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z','AI Handles Calls','When customers call, our AI answers — confirms appointments, reschedules, or connects to staff.','from-purple-500 to-pink-500'),
+('M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z','Get Paid Automatically','Invoices sent automatically. Payments collected online. Refunds processed on cancellation.','from-emerald-500 to-green-500')
+] %}
+<div class="feature-card bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-8 fade-in delay-{{ loop.index }}">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br {{ grad }} flex items-center justify-center mb-5 shadow-lg">
+<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ icon }}"/></svg>
+</div>
+<h3 class="text-lg font-bold mb-3 text-slate-900 dark:text-white">{{ title }}</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{{ desc }}</p>
+</div>
+{% endfor %}
+</div>
+</div>
+</section>
+
+<!-- BROWSE BUSINESSES -->
 <section class="py-28 border-y border-slate-200 dark:border-white/5">
 <div class="max-w-7xl mx-auto px-6">
 <div class="text-center mb-16 fade-in">
@@ -201,8 +326,8 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </div>
 <div class="flex items-center justify-between mt-2">
-{% if b.city %}<span class="text-xs text-slate-500">📍 {{ b.city }}</span>{% endif %}
-<span class="text-xs font-semibold text-brand-500">Book →</span>
+{% if b.city %}<span class="text-xs text-slate-500">{{ b.city }}</span>{% endif %}
+<span class="text-xs font-semibold text-brand-500">Book Now</span>
 </div>
 </div>
 </a>
@@ -210,11 +335,12 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 {% endif %}
 <div class="text-center">
-<a href="/businesses" class="btn-primary inline-block px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm shadow-lg shadow-brand-500/25">View All Businesses →</a>
+<a href="/businesses" class="btn-primary inline-block px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-500 text-white font-bold text-sm shadow-lg shadow-brand-500/25">View All Businesses</a>
 </div>
 </div>
 </section>
 
+<!-- PRICING -->
 <section id="pricing" class="py-28 bg-slate-50/50 dark:bg-white/[.01] border-y border-slate-200 dark:border-white/5">
 <div class="max-w-7xl mx-auto px-6">
 <div class="text-center mb-16 fade-in">
@@ -224,9 +350,9 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
 {% for plan, price, features, popular in [
-('Starter','$0',['1 service','10 bookings/month','Basic dashboard','Email support'],false),
-('Professional','$29',['Unlimited services','Unlimited bookings','SMS reminders','Payment collection','AI verification','Custom branding','Priority support'],true),
-('Business','$79',['Everything in Pro','Multiple staff','Advanced analytics','API access','Dedicated manager','Custom integrations'],false)
+('Free','$0',['1 service','10 bookings/month','Basic dashboard','Email support'],false),
+('Professional','$29',['Unlimited services','Unlimited bookings','AI verification calls','Payment collection','Auto invoicing','Postpone & notify','Custom branding','Priority support'],true),
+('Business','$79',['Everything in Pro','Multi-staff support','Advanced analytics','API access','Dedicated manager','Custom integrations'],false)
 ] %}
 <div class="pricing-card bg-white dark:bg-[#111118] border {% if popular %}border-brand-400 dark:border-brand-500/40 ring-2 ring-brand-500/20{% else %}border-slate-200 dark:border-white/5{% endif %} rounded-3xl p-8 relative fade-in {% if loop.index==1 %}delay-1{% elif loop.index==2 %}delay-2{% else %}delay-3{% endif %}">
 {% if popular %}<span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-brand-500 to-purple-500 text-white text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-brand-500/25">Most Popular</span>{% endif %}
@@ -244,6 +370,7 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </section>
 
+<!-- CTA -->
 <section class="py-28">
 <div class="max-w-4xl mx-auto px-6 text-center">
 <div class="bg-gradient-to-r from-brand-600 to-purple-600 rounded-3xl p-12 lg:p-16 relative overflow-hidden scale-in">
@@ -257,22 +384,45 @@ Let customers book 24/7. AI verification, automatic invoicing, secure payments. 
 </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="border-t border-slate-200 dark:border-white/5 py-12 bg-slate-50 dark:bg-white/[.01]">
 <div class="max-w-7xl mx-auto px-6">
-<div class="flex flex-col md:flex-row items-center justify-between gap-6">
-<div class="flex items-center gap-2.5">
-<img src="/static/logo.svg" alt="Noomly" class="w-9 h-9">
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+<div>
+<div class="flex items-center gap-2.5 mb-4">
+<img src="/static/logo.svg" alt="Noomly" class="w-8 h-8">
 <span class="text-lg font-extrabold">Noomly</span>
 </div>
-<div class="flex gap-6">
-<a href="#features" class="text-sm text-slate-500 hover:text-brand-500 transition">Features</a>
-<a href="/businesses" class="text-sm text-slate-500 hover:text-brand-500 transition">Browse Businesses</a>
-<a href="#pricing" class="text-sm text-slate-500 hover:text-brand-500 transition">Pricing</a>
-<a href="/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Business Sign In</a>
-<a href="/customer/login" class="text-sm text-slate-500 hover:text-brand-500 transition">Customer Sign In</a>
+<p class="text-sm text-slate-500 leading-relaxed">Smart booking platform for service businesses. AI-powered confirmations, auto invoicing, and 24/7 online booking.</p>
+</div>
+<div>
+<h4 class="font-bold text-sm mb-4 text-slate-900 dark:text-white">Product</h4>
+<div class="space-y-2">
+<a href="#features" class="block text-sm text-slate-500 hover:text-brand-500 transition">Features</a>
+<a href="#pricing" class="block text-sm text-slate-500 hover:text-brand-500 transition">Pricing</a>
+<a href="/businesses" class="block text-sm text-slate-500 hover:text-brand-500 transition">Browse Businesses</a>
+<a href="/register" class="block text-sm text-slate-500 hover:text-brand-500 transition">Get Started</a>
 </div>
 </div>
-<div class="border-t border-slate-200 dark:border-white/5 mt-8 pt-8 text-center text-sm text-slate-500">&copy; 2026 Noomly. All rights reserved.</div>
+<div>
+<h4 class="font-bold text-sm mb-4 text-slate-900 dark:text-white">Support</h4>
+<div class="space-y-2">
+<a href="#" class="block text-sm text-slate-500 hover:text-brand-500 transition">Help Center</a>
+<a href="#" class="block text-sm text-slate-500 hover:text-brand-500 transition">Contact Us</a>
+<a href="#" class="block text-sm text-slate-500 hover:text-brand-500 transition">API Docs</a>
+<a href="#" class="block text-sm text-slate-500 hover:text-brand-500 transition">Status</a>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-sm mb-4 text-slate-900 dark:text-white">Legal</h4>
+<div class="space-y-2">
+<a href="#" class="block text-sm text-slate-500 hover:text-brand-500 transition">Privacy Policy</a>
+<a href="#" class="block text-sm text-slate-500 hover:text-brand-500 transition">Terms of Service</a>
+<a href="#" class="block text-sm text-slate-500 hover:text-brand-500 transition">Refund Policy</a>
+</div>
+</div>
+</div>
+<div class="border-t border-slate-200 dark:border-white/5 pt-8 text-center text-sm text-slate-500">&copy; 2026 Noomly. All rights reserved.</div>
 </div>
 </footer>
 

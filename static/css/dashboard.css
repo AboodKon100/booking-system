@@ -20,7 +20,8 @@ body{transition:background-color .3s,color .3s;overflow-x:hidden}
 .dark .nav-label{color:#475569}
 
 /* MAIN CONTENT */
-.main-content{margin-left:250px;min-height:100vh;overflow-x:hidden}
+.main-content{margin-left:250px;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column}
+.main-content main{flex:1}
 .topbar{position:sticky;top:0;z-index:30;height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid #e2e8f0}
 .dark .topbar{background:rgba(10,10,15,.92);border-bottom-color:rgba(255,255,255,.05)}
 
