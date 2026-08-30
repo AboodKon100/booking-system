@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, date, timedelta, timedelta as td
 from sqlalchemy import func, and_, extract, or_
-import uuid, random, string, os, re, calendar as cal_mod
+import uuid, random, string, os, re, calendar as cal_mod, threading
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'noomly-prod-key-2026-change')
@@ -16,10 +17,46 @@ UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXT = {'png','jpg','jpeg','gif','webp'}
 
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'Noomly <noreply@noomly.com>')
+
 db = SQLAlchemy(app)
+mail = Mail(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'error'
+
+def send_email_async(app, msg):
+    with app.app_context():
+        try:
+            mail.send(msg)
+            return True
+        except Exception as e:
+            print(f'Email send failed: {e}')
+            return False
+
+def send_email(subject, recipient, html_body, sender=None):
+    msg = Message(subject=subject, recipients=[recipient], html=html_body, sender=sender or app.config['MAIL_DEFAULT_SENDER'])
+    thread = threading.Thread(target=send_email_async, args=(app, msg))
+    thread.daemon = True
+    thread.start()
+    return True
+
+def send_booking_confirmation(appointment, business):
+    svc_name = appointment.service.name if appointment.service else 'service'
+    html = render_template('email/booking_confirmation.html',
+                          business=business, appointment=appointment, service_name=svc_name)
+    send_email(f'Booking Confirmed - {business.name}', appointment.cust_email, html)
+
+def send_ai_confirmation(appointment, business):
+    svc_name = appointment.service.name if appointment.service else 'service'
+    html = render_template('email/ai_confirmation.html',
+                          business=business, appointment=appointment, service_name=svc_name)
+    send_email(f'Appointment Confirmed by AI - {business.name}', appointment.cust_email, html)
 
 BUSINESS_TYPES = {
     'salon': {'name': 'Salon & Beauty', 'icon': '✂️', 'color': 'from-pink-500 to-rose-500', 'features': ['Hair Styling', 'Coloring', 'Manicure', 'Pedicure'], 'default_services': [('Haircut & Styling', 45, 45), ('Hair Coloring', 120, 120), ('Manicure', 30, 30), ('Pedicure', 45, 45), ('Facial Treatment', 60, 65)]},
@@ -104,6 +141,8 @@ class Appointment(db.Model):
     confirmation_code = db.Column(db.String(8))
     ai_verified = db.Column(db.Boolean, default=False)
     ai_call_status = db.Column(db.String(20), default='pending')
+    email_sent = db.Column(db.Boolean, default=False)
+    email_sent_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Customer(UserMixin, db.Model):
@@ -427,7 +466,10 @@ def ai_agent():
     confirmed_by_ai = Appointment.query.filter(and_(
         Appointment.business_id==current_user.id, Appointment.ai_verified==True)).count()
     confirm_rate = round((confirmed_by_ai / total_calls * 100)) if total_calls > 0 else 0
-    return render_template('ai_agent.html', pending_calls=pending_calls, confirm_rate=confirm_rate, total_calls=total_calls)
+    emails_sent = Appointment.query.filter(and_(
+        Appointment.business_id==current_user.id, Appointment.email_sent==True)).count()
+    return render_template('ai_agent.html', pending_calls=pending_calls, confirm_rate=confirm_rate,
+                           total_calls=total_calls, stats={'emails_sent': emails_sent})
 
 @app.route('/dashboard/ai-agent/<aid>/call', methods=['POST'])
 @login_required
@@ -438,7 +480,19 @@ def simulate_call(aid):
     a.status = 'confirmed'
     if a.payment_amount > 0: a.payment_status = 'completed'
     db.session.commit()
-    flash(f'AI confirmed appointment with {a.cust_name}. Code: {a.confirmation_code}', 'success')
+    send_ai_confirmation(a, current_user)
+    flash(f'AI confirmed appointment with {a.cust_name}. Confirmation email sent. Code: {a.confirmation_code}', 'success')
+    return redirect(url_for('ai_agent'))
+
+@app.route('/dashboard/ai-agent/<aid>/email', methods=['POST'])
+@login_required
+def send_agent_email(aid):
+    a = Appointment.query.filter_by(id=aid, business_id=current_user.id).first_or_404()
+    send_booking_confirmation(a, current_user)
+    a.email_sent = True
+    a.email_sent_at = datetime.utcnow()
+    db.session.commit()
+    flash(f'Confirmation email sent to {a.cust_email}', 'success')
     return redirect(url_for('ai_agent'))
 
 @app.route('/dashboard/invoices')
@@ -498,6 +552,7 @@ def book_confirm(slug):
                     payment_amount=svc.price, status='pending')
     db.session.add(a)
     db.session.commit()
+    send_booking_confirmation(a, b)
     return redirect(url_for('booking_confirmed', slug=slug, aid=a.id))
 
 @app.route('/book/<slug>/confirmed/<aid>')

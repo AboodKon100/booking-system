@@ -9,35 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{brand:{50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'}}}}}</script>
-<style>
-*{font-family:'Inter',sans-serif}
-body{transition:background-color .3s,color .3s}
-.sidebar{width:260px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);border-right:1px solid #e2e8f0}
-.dark .sidebar{background:linear-gradient(180deg,#0f0f17 0%,#111118 100%);border-right-color:rgba(255,255,255,.05)}
-.nav-item{transition:all .2s;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer}
-.dark .nav-item{color:#94a3b8}
-.nav-item:hover{background:rgba(99,102,241,.06);color:#6366f1}
-.dark .nav-item:hover{background:rgba(99,102,241,.1)}
-.nav-item.active{background:rgba(99,102,241,.1);color:#6366f1;font-weight:600}
-.dark .nav-item.active{background:rgba(99,102,241,.15)}
-.main-content{flex:1;margin-left:260px;overflow-x:hidden}
-.topbar{background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid #e2e8f0}
-.dark .topbar{background:rgba(10,10,15,.9);border-bottom-color:rgba(255,255,255,.05)}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
-.dark ::-webkit-scrollbar-thumb{background:#334155}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
-.animate-in{animation:fadeInUp .5s ease-out both}
-.animate-in-delay-1{animation:fadeInUp .5s ease-out .1s both}
-.animate-in-delay-2{animation:fadeInUp .5s ease-out .2s both}
-.animate-in-delay-3{animation:fadeInUp .5s ease-out .3s both}
-.count-up{animation:countUp .4s ease-out both}
-.stat-card{transition:all .3s cubic-bezier(.4,0,.2,1)}
-.stat-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -12px rgba(99,102,241,.15)}
-.dark .stat-card:hover{box-shadow:0 20px 40px -12px rgba(99,102,241,.1)}
-.appt-row{transition:all .2s}
-.appt-row:hover{transform:translateX(4px);background:rgba(99,102,241,.03)}
-</style>
+<link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
 <body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen flex">
 {{ sidebar('Dashboard') }}
@@ -179,7 +151,7 @@ const gridColor=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)';
 const tickColor=isDark?'#64748b':'#94a3b8';
 new Chart(document.getElementById('revChart'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:revData,borderColor:'#6366f1',backgroundColor:isDark?'rgba(99,102,241,.15)':'rgba(99,102,241,.08)',fill:true,tension:.4,borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#6366f1',pointBorderColor:isDark?'#111118':'#fff',pointBorderWidth:2,pointHoverRadius:7}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:isDark?'#1e1e2e':'#1e293b',titleColor:'#fff',bodyColor:'#cbd5e1',borderColor:'rgba(99,102,241,.3)',borderWidth:1,cornerRadius:12,padding:12,displayColors:false, callbacks:{label:ctx=>'$'+ctx.parsed.y}}},scales:{x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11,weight:500}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11},callback:v=>'$'+v}}}}});
 new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:['Pending','Confirmed','Completed','Cancelled'],datasets:[{data:{{ status_data | tojson }},backgroundColor:['#f59e0b','#10b981','#6366f1','#ef4444'],borderWidth:0,borderRadius:4,spacing:2}]},options:{responsive:true,cutout:'72%',plugins:{legend:{display:false}}}});
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('-translate-x-full')}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
 function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}
 function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
 initTheme();
