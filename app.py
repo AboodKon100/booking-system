@@ -30,6 +30,9 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'error'
 
+def is_email_configured():
+    return bool(app.config.get('MAIL_USERNAME') and app.config.get('MAIL_PASSWORD'))
+
 def send_email_async(app, msg):
     with app.app_context():
         try:
@@ -40,7 +43,11 @@ def send_email_async(app, msg):
             return False
 
 def send_email(subject, recipient, html_body, sender=None):
-    msg = Message(subject=subject, recipients=[recipient], html=html_body, sender=sender or app.config['MAIL_DEFAULT_SENDER'])
+    if not is_email_configured():
+        print(f'[DEMO EMAIL] To: {recipient} | Subject: {subject}')
+        print(f'[DEMO EMAIL] SMTP not configured. Set MAIL_USERNAME and MAIL_PASSWORD env vars.')
+        return False
+    msg = Message(subject=subject, recipients=[recipient], html_body=html_body, sender=sender or app.config['MAIL_DEFAULT_SENDER'])
     thread = threading.Thread(target=send_email_async, args=(app, msg))
     thread.daemon = True
     thread.start()
@@ -479,20 +486,28 @@ def simulate_call(aid):
     a.ai_verified = True
     a.status = 'confirmed'
     if a.payment_amount > 0: a.payment_status = 'completed'
+    a.email_sent = True
+    a.email_sent_at = datetime.utcnow()
     db.session.commit()
-    send_ai_confirmation(a, current_user)
-    flash(f'AI confirmed appointment with {a.cust_name}. Confirmation email sent. Code: {a.confirmation_code}', 'success')
+    sent = send_ai_confirmation(a, current_user)
+    if sent:
+        flash(f'AI confirmed appointment with {a.cust_name}. Email sent. Code: {a.confirmation_code}', 'success')
+    else:
+        flash(f'AI confirmed {a.cust_name}. (Demo mode - configure SMTP for real emails). Code: {a.confirmation_code}', 'info')
     return redirect(url_for('ai_agent'))
 
 @app.route('/dashboard/ai-agent/<aid>/email', methods=['POST'])
 @login_required
 def send_agent_email(aid):
     a = Appointment.query.filter_by(id=aid, business_id=current_user.id).first_or_404()
-    send_booking_confirmation(a, current_user)
+    sent = send_booking_confirmation(a, current_user)
     a.email_sent = True
     a.email_sent_at = datetime.utcnow()
     db.session.commit()
-    flash(f'Confirmation email sent to {a.cust_email}', 'success')
+    if sent:
+        flash(f'Confirmation email sent to {a.cust_email}', 'success')
+    else:
+        flash(f'Email logged (demo mode). Configure MAIL_USERNAME & MAIL_PASSWORD on Render to send real emails.', 'info')
     return redirect(url_for('ai_agent'))
 
 @app.route('/dashboard/invoices')
@@ -552,7 +567,11 @@ def book_confirm(slug):
                     payment_amount=svc.price, status='pending')
     db.session.add(a)
     db.session.commit()
-    send_booking_confirmation(a, b)
+    sent = send_booking_confirmation(a, b)
+    if sent:
+        flash('Confirmation email sent to your email address.', 'success')
+    else:
+        flash('Booking confirmed! (Email demo mode - configure SMTP to send real emails)', 'info')
     return redirect(url_for('booking_confirmed', slug=slug, aid=a.id))
 
 @app.route('/book/<slug>/confirmed/<aid>')

@@ -11,26 +11,26 @@
 <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
 <body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen flex">
-{{ sidebar('Settings') }}
+{{ sidebar('Notifications') }}
 <div class="main-content">
 {{ topbar('Notifications') }}
-<main class="p-6 lg:p-8">
-<div class="space-y-3">
+<main class="p-4 sm:p-6 lg:p-8">
+<div class="space-y-2.5 sm:space-y-3">
 {% for title,time,desc,bg in [('New Booking','Just now','A customer booked an appointment','bg-green-500'),('Payment Received','1 hour ago','$29 payment confirmed','bg-brand-500'),('Appointment Completed','3 hours ago','Sarah Johnson completed her appointment','bg-purple-500')] %}
-<div class="flex items-start gap-4 p-5 bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl hover:border-brand-300 dark:hover:border-brand-500/30 transition">
-<div class="w-10 h-10 rounded-full {{ bg }} flex items-center justify-center flex-shrink-0">
-<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+<div class="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 card hover:border-brand-300 dark:hover:border-brand-500/30 transition">
+<div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full {{ bg }} flex items-center justify-center flex-shrink-0">
+<svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
 </div>
-<div class="flex-1">
+<div class="flex-1 min-w-0">
 <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ title }}</p>
 <p class="text-xs text-slate-500 mt-1">{{ desc }}</p>
 </div>
-<span class="text-xs text-slate-400">{{ time }}</span>
+<span class="text-xs text-slate-400 whitespace-nowrap flex-shrink-0">{{ time }}</span>
 </div>
 {% endfor %}
 </div>
 </main>
 </div>
-<script>function toggleSidebar(){document.getElementById('sidebar').classList.toggle('-translate-x-full')}function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}initTheme();</script>
+<script src="/static/js/dashboard.js"></script>
 </body>
 </html>

@@ -14,40 +14,40 @@
 {{ sidebar('Customers') }}
 <div class="main-content">
 {{ topbar('Customers') }}
-<main class="p-6 lg:p-8">
+<main class="p-4 sm:p-6 lg:p-8">
 {% if customers %}
-<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
 {% for c in customers %}
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-brand-300 dark:hover:border-brand-500/30 transition-all hover:-translate-y-0.5">
+<div class="card hover:border-brand-300 dark:hover:border-brand-500/30 transition-all hover:-translate-y-0.5">
 <div class="flex items-center gap-3 mb-4">
-<div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-purple-500 flex items-center justify-center font-bold text-lg text-white">{{ c[0][0] }}</div>
-<div class="flex-1">
-<h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ c[0] }}</h3>
-<p class="text-xs text-slate-500">{{ c[1] }}</p>
+<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-brand-400 to-purple-500 flex items-center justify-center font-bold text-base sm:text-lg text-white flex-shrink-0">{{ c[0][0] }}</div>
+<div class="min-w-0">
+<h3 class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ c[0] }}</h3>
+<p class="text-xs text-slate-500 truncate">{{ c[1] }}</p>
 </div>
 </div>
-<div class="grid grid-cols-2 gap-3">
-<div class="bg-slate-50 dark:bg-white/[.03] rounded-xl p-3 text-center border border-slate-100 dark:border-white/[.03]">
-<p class="text-lg font-extrabold text-slate-900 dark:text-white">{{ c[3] }}</p>
-<p class="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Bookings</p>
+<div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+<div class="bg-slate-50 dark:bg-white/[.03] rounded-xl p-2.5 sm:p-3 text-center border border-slate-100 dark:border-white/[.03]">
+<p class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">{{ c[3] }}</p>
+<p class="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider font-medium">Bookings</p>
 </div>
-<div class="bg-slate-50 dark:bg-white/[.03] rounded-xl p-3 text-center border border-slate-100 dark:border-white/[.03]">
-<p class="text-lg font-extrabold text-green-600 dark:text-green-400">${{ '%.0f'|format(c[4] or 0) }}</p>
-<p class="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Spent</p>
+<div class="bg-slate-50 dark:bg-white/[.03] rounded-xl p-2.5 sm:p-3 text-center border border-slate-100 dark:border-white/[.03]">
+<p class="text-base sm:text-lg font-extrabold text-green-600 dark:text-green-400">${{ '%.0f'|format(c[4] or 0) }}</p>
+<p class="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider font-medium">Spent</p>
 </div>
 </div>
 </div>
 {% endfor %}
 </div>
 {% else %}
-<div class="text-center py-20">
-<div class="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-white/[.03] flex items-center justify-center mx-auto mb-5"><svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
+<div class="text-center py-16 sm:py-20">
+<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-100 dark:bg-white/[.03] flex items-center justify-center mx-auto mb-4 sm:mb-5"><svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
 <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">No customers yet</h3>
 <p class="text-sm text-slate-500">Customers will appear here once they book appointments</p>
 </div>
 {% endif %}
 </main>
 </div>
-<script>function toggleSidebar(){document.getElementById('sidebar').classList.toggle('-translate-x-full')}function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}initTheme();</script>
+<script src="/static/js/dashboard.js"></script>
 </body>
 </html>

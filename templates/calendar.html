@@ -15,13 +15,14 @@
 {{ sidebar('Calendar') }}
 <div class="main-content">
 {{ topbar('Calendar') }}
-<main class="p-6 lg:p-8">
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
+<main class="p-4 sm:p-6 lg:p-8">
+<div class="card overflow-hidden p-2 sm:p-6">
 <div id="calendar"></div>
 </div>
 </main>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="/static/js/dashboard.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
 var cal=new FullCalendar.Calendar(document.getElementById('calendar'),{
@@ -30,10 +31,6 @@ headerToolbar:{left:'prev,next today',center:'title',right:'dayGridMonth,timeGri
 events:'/api/calendar/events',height:'auto',dayMaxEvents:true,nowIndicator:true});
 cal.render();
 });
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('-translate-x-full')}
-function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}
-function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
-initTheme();
 </script>
 </body>
 </html>

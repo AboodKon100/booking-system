@@ -15,50 +15,48 @@
 {{ sidebar('Reports') }}
 <div class="main-content">
 {{ topbar('Reports') }}
-<main class="p-6 lg:p-8">
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
-<p class="text-[11px] text-slate-500 uppercase tracking-wider font-medium mb-1">Monthly Revenue</p>
-<p class="text-3xl font-extrabold text-green-600 dark:text-green-400">${{ '%.0f'|format(revenue) }}</p>
+<main class="p-4 sm:p-6 lg:p-8">
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+<div class="card">
+<p class="text-[10px] sm:text-[11px] text-slate-500 uppercase tracking-wider font-medium mb-1">Monthly Revenue</p>
+<p class="text-2xl sm:text-3xl font-extrabold text-green-600 dark:text-green-400">${{ '%.0f'|format(revenue) }}</p>
 </div>
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
-<p class="text-[11px] text-slate-500 uppercase tracking-wider font-medium mb-1">Total Bookings</p>
-<p class="text-3xl font-extrabold text-slate-900 dark:text-white">{{ appt_count }}</p>
+<div class="card">
+<p class="text-[10px] sm:text-[11px] text-slate-500 uppercase tracking-wider font-medium mb-1">Total Bookings</p>
+<p class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">{{ appt_count }}</p>
 </div>
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
-<p class="text-[11px] text-slate-500 uppercase tracking-wider font-medium mb-1">Avg per Booking</p>
-<p class="text-3xl font-extrabold text-brand-600 dark:text-brand-400">${{ '%.0f'|format(revenue / appt_count if appt_count else 0) }}</p>
+<div class="card">
+<p class="text-[10px] sm:text-[11px] text-slate-500 uppercase tracking-wider font-medium mb-1">Avg per Booking</p>
+<p class="text-2xl sm:text-3xl font-extrabold text-brand-600 dark:text-brand-400">${{ '%.0f'|format(revenue / appt_count if appt_count else 0) }}</p>
 </div>
 </div>
-<div class="grid lg:grid-cols-2 gap-5">
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
-<h3 class="font-bold mb-4 text-slate-900 dark:text-white">Revenue Chart</h3>
+<div class="grid lg:grid-cols-2 gap-4 sm:gap-5">
+<div class="card">
+<h3 class="font-bold mb-3 sm:mb-4 text-slate-900 dark:text-white">Revenue Chart</h3>
 <canvas id="revChart" height="120"></canvas>
 </div>
-<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl p-6">
-<h3 class="font-bold mb-4 text-slate-900 dark:text-white">Top Services</h3>
+<div class="card">
+<h3 class="font-bold mb-3 sm:mb-4 text-slate-900 dark:text-white">Top Services</h3>
 {% if top_services %}
-<div class="space-y-3">
+<div class="space-y-2.5">
 {% for s in top_services %}
 <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/[.03] rounded-xl border border-slate-100 dark:border-white/[.03]">
-<span class="text-sm font-medium text-slate-900 dark:text-white">{{ s[0] }}</span>
-<span class="text-sm font-bold text-brand-500">{{ s[1] }} bookings</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white truncate mr-2">{{ s[0] }}</span>
+<span class="text-sm font-bold text-brand-500 whitespace-nowrap">{{ s[1] }} bookings</span>
 </div>
 {% endfor %}
 </div>
 {% else %}
-<p class="text-sm text-slate-500 text-center py-8">No data yet</p>
+<p class="text-sm text-slate-500 text-center py-6 sm:py-8">No data yet</p>
 {% endif %}
 </div>
 </div>
 </main>
 </div>
+<script src="/static/js/dashboard.js"></script>
 <script>
-new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:['Week 1','Week 2','Week 3','Week 4'],datasets:[{label:'Revenue',data:[{{ revenue * 0.2 }},{{ revenue * 0.25 }},{{ revenue * 0.3 }},{{ revenue * 0.25 }}],backgroundColor:'rgba(99,102,241,.6)',borderRadius:8,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#94a3b8',font:{size:11}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#94a3b8',font:{size:11},callback:v=>'$'+v}}}}});
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
-function initTheme(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}
-function toggleTheme(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
-initTheme();
+var isDark=document.documentElement.classList.contains('dark');
+new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:['Week 1','Week 2','Week 3','Week 4'],datasets:[{label:'Revenue',data:[{{ revenue * 0.2 }},{{ revenue * 0.25 }},{{ revenue * 0.3 }},{{ revenue * 0.25 }}],backgroundColor:'rgba(99,102,241,.6)',borderRadius:8,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)'},ticks:{color:isDark?'#64748b':'#94a3b8',font:{size:11}}},y:{grid:{color:isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)'},ticks:{color:isDark?'#64748b':'#94a3b8',font:{size:11},callback:v=>'$'+v}}}}});
 </script>
 </body>
 </html>
