@@ -10,13 +10,49 @@
 <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{brand:{50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'}}}}}</script>
 <link rel="stylesheet" href="/static/css/dashboard.css">
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<style>
+.fc{font-family:'Inter',sans-serif !important}
+.fc .fc-toolbar{padding:16px 20px;margin:0;border-bottom:1px solid #e2e8f0}
+.dark .fc .fc-toolbar{border-bottom-color:rgba(255,255,255,.05)}
+.fc .fc-toolbar-title{font-size:18px !important;font-weight:700 !important;color:#1e293b}
+.dark .fc .fc-toolbar-title{color:#f1f5f9}
+.fc .fc-button{padding:8px 16px !important;border-radius:10px !important;font-size:12px !important;font-weight:600 !important;border:1px solid #e2e8f0 !important;background:#fff !important;color:#475569 !important;text-transform:capitalize !important;box-shadow:none !important}
+.dark .fc .fc-button{background:#1a1a24 !important;border-color:rgba(255,255,255,.08) !important;color:#94a3b8 !important}
+.fc .fc-button:hover{background:#f1f5f9 !important;color:#6366f1 !important;border-color:#c7d2fe !important}
+.dark .fc .fc-button:hover{background:#252530 !important;color:#818cf8 !important}
+.fc .fc-button-active{background:linear-gradient(135deg,#6366f1,#8b5cf6) !important;color:#fff !important;border-color:#6366f1 !important}
+.dark .fc .fc-button-active{background:linear-gradient(135deg,#6366f1,#8b5cf6) !important;color:#fff !important;border-color:#6366f1 !important}
+.fc .fc-daygrid-day{border:1px solid #f1f5f9 !important;padding:4px}
+.dark .fc .fc-daygrid-day{border-color:rgba(255,255,255,.03) !important}
+.fc .fc-daygrid-day-number{font-size:13px;font-weight:500;color:#475569;padding:8px 10px}
+.dark .fc .fc-daygrid-day-number{color:#94a3b8}
+.fc .fc-daygrid-day.fc-day-today{background:rgba(99,102,241,.04) !important}
+.dark .fc .fc-daygrid-day.fc-day-today{background:rgba(99,102,241,.08) !important}
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number{color:#6366f1;font-weight:700}
+.fc .fc-col-header-cell{padding:12px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;border:1px solid #f1f5f9 !important}
+.dark .fc .fc-col-header-cell{color:#475569;border-color:rgba(255,255,255,.03) !important}
+.fc .fc-event{padding:3px 8px !important;border-radius:8px !important;font-size:11px !important;font-weight:600 !important;border:none !important;margin-bottom:2px !important}
+.fc .fc-daygrid-event{border-radius:8px !important}
+.fc .fc-event-pending{background:rgba(245,158,11,.15) !important;color:#d97706 !important}
+.fc .fc-event-confirmed{background:rgba(16,185,129,.15) !important;color:#059669 !important}
+.fc .fc-event-completed{background:rgba(99,102,241,.15) !important;color:#4f46e5 !important}
+.fc .fc-event-cancelled{background:rgba(239,68,68,.15) !important;color:#dc2626 !important}
+.fc .fc-scrollgrid{border:1px solid #e2e8f0 !important;border-radius:16px !important;overflow:hidden}
+.dark .fc .fc-scrollgrid{border-color:rgba(255,255,255,.05) !important}
+.fc .fc-timegrid-slot{height:48px !important;border-color:#f1f5f9 !important}
+.dark .fc .fc-timegrid-slot{border-color:rgba(255,255,255,.03) !important}
+.fc .fc-timegrid-slot-label-cushion{font-size:11px;color:#94a3b8}
+.fc .fc-timegrid-divider{border-color:#e2e8f0 !important}
+.fc .fc-timegrid-now-indicator-line{border-color:#6366f1 !important;border-width:2px}
+.fc .fc-timegrid-now-indicator-arrow{border-color:#6366f1 !important}
+</style>
 </head>
 <body class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-900 dark:text-slate-100 min-h-screen flex">
 {{ sidebar('Calendar') }}
 <div class="main-content">
 {{ topbar('Calendar') }}
 <main class="p-4 sm:p-6 lg:p-8">
-<div class="card overflow-hidden p-2 sm:p-6">
+<div class="bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden">
 <div id="calendar"></div>
 </div>
 </main>
@@ -25,10 +61,26 @@
 <script src="/static/js/dashboard.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
+var isDark=document.documentElement.classList.contains('dark');
 var cal=new FullCalendar.Calendar(document.getElementById('calendar'),{
-initialView:'dayGridMonth',backgroundColor:'transparent',
+initialView:'dayGridMonth',
+height:'auto',
+dayMaxEvents:3,
+nowIndicator:true,
+eventDisplay:'block',
+slotMinTime:'07:00:00',
+slotMaxTime:'22:00:00',
+allDaySlot:false,
 headerToolbar:{left:'prev,next today',center:'title',right:'dayGridMonth,timeGridWeek,timeGridDay'},
-events:'/api/calendar/events',height:'auto',dayMaxEvents:true,nowIndicator:true});
+events:'/api/calendar/events',
+eventDidMount:function(info){
+info.el.title=info.event.title+' - '+info.event.extendedProps.status;
+},
+viewDidMount:function(){
+var newDark=document.documentElement.classList.contains('dark');
+if(newDark!==isDark){isDark=newDark;cal.destroy();cal.render();}
+}
+});
 cal.render();
 });
 </script>

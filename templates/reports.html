@@ -33,7 +33,7 @@
 <div class="grid lg:grid-cols-2 gap-4 sm:gap-5">
 <div class="card">
 <h3 class="font-bold mb-3 sm:mb-4 text-slate-900 dark:text-white">Revenue Chart</h3>
-<canvas id="revChart" height="120"></canvas>
+<div style="height:250px"><canvas id="revChart"></canvas></div>
 </div>
 <div class="card">
 <h3 class="font-bold mb-3 sm:mb-4 text-slate-900 dark:text-white">Top Services</h3>
@@ -56,7 +56,11 @@
 <script src="/static/js/dashboard.js"></script>
 <script>
 var isDark=document.documentElement.classList.contains('dark');
-new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:['Week 1','Week 2','Week 3','Week 4'],datasets:[{label:'Revenue',data:[{{ revenue * 0.2 }},{{ revenue * 0.25 }},{{ revenue * 0.3 }},{{ revenue * 0.25 }}],backgroundColor:'rgba(99,102,241,.6)',borderRadius:8,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)'},ticks:{color:isDark?'#64748b':'#94a3b8',font:{size:11}}},y:{grid:{color:isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)'},ticks:{color:isDark?'#64748b':'#94a3b8',font:{size:11},callback:v=>'$'+v}}}}});
+var ctx=document.getElementById('revChart').getContext('2d');
+var barGrad=ctx.createLinearGradient(0,0,0,250);
+barGrad.addColorStop(0,'rgba(99,102,241,.8)');
+barGrad.addColorStop(1,'rgba(139,92,246,.4)');
+new Chart(ctx,{type:'bar',data:{labels:['Week 1','Week 2','Week 3','Week 4'],datasets:[{label:'Revenue',data:[{{ revenue * 0.2 }},{{ revenue * 0.25 }},{{ revenue * 0.3 }},{{ revenue * 0.25 }}],backgroundColor:barGrad,borderRadius:10,borderSkipped:false,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:isDark?'rgba(17,17,24,.95)':'rgba(30,41,59,.95)',titleColor:'#fff',bodyColor:'#cbd5e1',borderColor:'rgba(99,102,241,.3)',borderWidth:1,cornerRadius:12,padding:12,displayColors:false,callbacks:{label:ctx=>'$'+ctx.parsed.y.toFixed(0)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:isDark?'#475569':'#94a3b8',font:{size:11,weight:500},padding:8}},y:{grid:{color:isDark?'rgba(255,255,255,.04)':'rgba(0,0,0,.03)',drawBorder:false},border:{display:false},ticks:{color:isDark?'#475569':'#94a3b8',font:{size:11},padding:12,callback:v=>'$'+v},beginAtZero:true}}}});
 </script>
 </body>
 </html>
